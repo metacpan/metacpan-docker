@@ -24,9 +24,9 @@ RUN curl -L http://cpanmin.us | perl - App::cpanminus
 
 RUN cpanm Carton
 
-RUN git clone https://github.com/CPAN-API/metacpan-web.git /root/metacpan-web/
+RUN git clone https://github.com/CPAN-API/metacpan-web.git /metacpan-web/
 
-WORKDIR /root/metacpan-web/
+WORKDIR /metacpan-web/
 
 RUN carton install
 

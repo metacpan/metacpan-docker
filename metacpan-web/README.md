@@ -22,7 +22,7 @@ file from your docker host system like this (Here is the link to the [basic conf
 
     docker run \
         --publish 8000:5001 \
-        --volume /absolute/path/to/metacpan_web.conf:/root/metacpan_web.conf \
+        --volume /absolute/path/to/metacpan_web.conf:/metacpan_web/metacpan_web.conf \
         --detach \
         metacpan-web
 
