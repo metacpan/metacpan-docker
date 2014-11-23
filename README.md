@@ -139,10 +139,10 @@ To do it you can create ineractive container:
 
 And then execute all the needed scripts:
 
-        carton exec bin/metacpan mapping --delete
-        carton exec bin/metacpan release /cpan/authors/id/
-        carton exec bin/metacpan latest --cpan /cpan/
-        carton exec bin/metacpan author --cpan /cpan/
+    carton exec bin/metacpan mapping --delete
+    carton exec bin/metacpan release /cpan/authors/id/
+    carton exec bin/metacpan latest --cpan /cpan/
+    carton exec bin/metacpan author --cpan /cpan/
 
 ## metacpan-web
 
