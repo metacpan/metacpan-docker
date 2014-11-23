@@ -152,7 +152,7 @@ Then you need to run metacpan-web:
         --detach \
         --publish 5001:5001 \
         --link=cpan-api:cpan-api \
-        --volume=$(pwd)/configs/metacpan-web/metacpan_web.conf:/root/metacpan-web/metacpan_web.conf \
+        --volume=$(pwd)/configs/metacpan-web/metacpan_web.conf:/metacpan-web/metacpan_web.conf \
         --name metacpan-web \
         metacpan-web
 
