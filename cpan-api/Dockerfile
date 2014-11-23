@@ -22,3 +22,5 @@ RUN git clone https://github.com/CPAN-API/cpan-api.git /cpan-api/
 WORKDIR /cpan-api/
 
 RUN carton install
+
+CMD ["carton", "exec", "plackup", "-p", "5000", "-r"]
