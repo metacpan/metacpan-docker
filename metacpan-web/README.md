@@ -1,4 +1,4 @@
-# Runnig metacpan-web in docker.
+# Running metacpan-web in docker.
 
 This is an experiment to run [Web interface for MetaCPAN][web] in [Docker][d].
 

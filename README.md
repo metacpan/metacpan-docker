@@ -9,12 +9,12 @@ to be done better. Please use it and create Issues with your problems.
 
  * [Install Docker](https://docs.docker.com/installation/)
  * Clone this repo
- * Build all images with the comands like:
+ * Build all images with the commands like:
    `cd cpan-api; docker build --tag cpan-api .`
 
 ## System architecture
 
-The system consists of serverl microservices that live in docker containes:
+The system consists of several microservices that live in docker containers:
 
  * `cpan_volume` — data volume container that shares directory `/cpan` with
    all other containers
@@ -25,9 +25,9 @@ The system consists of serverl microservices that live in docker containes:
 
 ## cpan_volume
 
-Eveything starts from the volume `/cpan`.
+Everything starts from the volume `/cpan`.
 
-First you need to create data volume contaner:
+First you need to create data volume container:
 
     docker run --name cpan_volume --volume=/cpan ubuntu:14.04
 
@@ -84,15 +84,15 @@ First you need to run container with elasticsearch:
         --name elasticsearch \
         elasticsearch
 
-You can check that you have elasticsearch running with the comand:
+You can check that you have elasticsearch running with the command:
 
     curl 127.0.0.1:9200
 
 PS If you run docker on mac or windows you should change `127.0.0.1` to the ip
-address of our docker virtual machinge (you can find out this ip with the
+address of our docker virtual machine (you can find out this ip with the
 `boot2docker ip`).
 
-Here is the output you are expecred to see:
+Here is the output you are expected to see:
 
     {
       "ok" : true,
@@ -124,7 +124,7 @@ Next you need to run cpan-api server. This can be done with the command:
         cpan-api
 
 So the server is running but you also need to run some scripts to index data.
-To do it you can create ineractive container:
+To do it you can create interactive container:
 
     docker run \
         -it \
