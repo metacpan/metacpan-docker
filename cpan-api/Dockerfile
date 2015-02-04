@@ -11,6 +11,7 @@ RUN apt-get install -y \
     libcurl4-openssl-dev \
     libexpat1-dev \
     libxml2-dev \
+    libgmp10-dev \
     make
 
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
