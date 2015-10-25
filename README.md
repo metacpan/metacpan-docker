@@ -82,7 +82,8 @@ First you need to run container with elasticsearch:
         --detach \
         --publish 9200:9200 \
         --name elasticsearch \
-        elasticsearch
+        elasticsearch:1.7.3 \
+        elasticsearch -Des.node.name='TestNode'
 
 You can check that you have elasticsearch running with the command:
 
