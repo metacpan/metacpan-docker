@@ -21,7 +21,8 @@ RUN cpanm Carton@v1.0.22
 
 WORKDIR /app
 
-RUN git clone https://github.com/CPAN-API/metacpan-web.git /app/
+RUN git clone https://github.com/CPAN-API/metacpan-web.git /app/ \
+    && git checkout -b tmp d20c1b6dc4235dac31f66608e3a03ea9de7b8565
 
 RUN carton install --deployment
 
