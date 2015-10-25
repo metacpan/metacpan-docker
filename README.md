@@ -117,8 +117,8 @@ Next you need to run cpan-api server. This can be done with the command:
         --detach \
         --volumes-from=cpan_volume \
         --link=elasticsearch:elasticsearch \
-        --volume=$(pwd)/configs/cpan-api/metacpan.pl:/cpan-api/etc/metacpan.pl \
-        --volume=$(pwd)/configs/cpan-api/metacpan_server.conf:/cpan-api/metacpan_server.conf \
+        --volume=`pwd`/configs/cpan-api/metacpan.pl:/cpan-api/etc/metacpan.pl \
+        --volume=`pwd`/configs/cpan-api/metacpan_server.conf:/cpan-api/metacpan_server.conf \
         --env MINICPAN=/cpan \
         --publish 5000:5000 \
         --name cpan-api \
@@ -132,8 +132,8 @@ To do it you can create interactive container:
         --rm \
         --volumes-from=cpan_volume \
         --link=elasticsearch:elasticsearch \
-        --volume=$(pwd)/configs/cpan-api/metacpan.pl:/cpan-api/etc/metacpan.pl \
-        --volume=$(pwd)/configs/cpan-api/metacpan_server.conf:/cpan-api/metacpan_server.conf \
+        --volume=`pwd`/configs/cpan-api/metacpan.pl:/cpan-api/etc/metacpan.pl \
+        --volume=`pwd`/configs/cpan-api/metacpan_server.conf:/cpan-api/metacpan_server.conf \
         --env MINICPAN=/cpan \
         cpan-api \
         bash
@@ -153,7 +153,7 @@ Then you need to run metacpan-web:
         --detach \
         --publish 5001:5001 \
         --link=cpan-api:cpan-api \
-        --volume=$(pwd)/configs/metacpan-web/metacpan_web.conf:/metacpan-web/metacpan_web.conf \
+        --volume=`pwd`/configs/metacpan-web/metacpan_web.conf:/metacpan-web/metacpan_web.conf \
         --name metacpan-web \
         metacpan-web
 

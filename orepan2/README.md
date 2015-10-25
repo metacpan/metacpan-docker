@@ -11,15 +11,14 @@ And then you can use that image to create dakpan structure.
 
     docker run \
         --rm \
-        --volume $(pwd)/darkpan:/darkpan \
+        --volume `pwd`/darkpan:/darkpan \
         orepan2 \
         orepan2-inject --author LOGIN Test::Whitespaces /darkpan
 
 This command will download module Test::Whitespaces from the big CPAN and
-place in at `$(pwd)/darkpan` on your host machine. Here the sample of what
-will be created:
+place in on your host machine. Here the sample of what will be created:
 
-    $ find $(pwd)/darkpan
+    $ find `pwd`/darkpan
     /Users/bessarabov/darkpan
     /Users/bessarabov/darkpan/authors
     /Users/bessarabov/darkpan/authors/id
