@@ -1,0 +1,1 @@
+time docker-compose stop; time docker-compose rm -f

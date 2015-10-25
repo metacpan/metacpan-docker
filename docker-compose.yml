@@ -1,0 +1,32 @@
+orepan2:
+  build: orepan2/
+
+storage:
+  image: ubuntu:14.04.3
+  volumes:
+    - ./cpan:/cpan
+
+elasticsearch:
+  image: elasticsearch:1.7.3
+  ports:
+    - "9200:9200"
+  command: "elasticsearch -Des.node.name='TestNode'"
+
+api:
+  build: cpan-api/
+  links:
+   - elasticsearch
+  environment:
+    - MINICPAN=/cpan
+  volumes:
+    - ./configs/cpan-api/metacpan.pl:/cpan-api/etc/metacpan.pl
+    - ./configs/cpan-api/metacpan_server.conf:/cpan-api/metacpan_server.conf \
+  volumes_from:
+    - storage
+  ports:
+    - "5000:5000"
+
+web:
+  build: metacpan-web/
+  ports:
+    - "5001:5001"
