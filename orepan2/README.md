@@ -13,7 +13,7 @@ And then you can use that image to create dakpan structure.
         --rm \
         --volume `pwd`/cpan:/cpan \
         orepan2 \
-        orepan2-inject --author LOGIN Test::Whitespaces /cpan
+        carton exec orepan2-inject --author LOGIN Test::Whitespaces /cpan
 
 This command will download module Test::Whitespaces from the big CPAN and
 place in on your host machine. Here the sample of what will be created:

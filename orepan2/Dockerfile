@@ -1,18 +1,16 @@
-FROM ubuntu:14.04
+FROM ubuntu:14.04.3
 
-ENV UPDATED_AT 2014-11-22
-
-RUN apt-get update
-
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     libcurl4-openssl-dev \
     make
 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
+RUN curl --silent https://raw.githubusercontent.com/miyagawa/cpanminus/1.7039/cpanm | perl - App::cpanminus
+RUN cpanm Carton@v1.0.22
 
-# This is a fix, until this ticket is solved: https://github.com/tokuhirom/OrePAN2/pull/31
-RUN cpanm IO::Socket::SSL
+ADD cpanfile /app/
+ADD cpanfile.snapshot /app/
 
-RUN cpanm OrePAN2
+WORKDIR /app
+RUN carton install --deployment
