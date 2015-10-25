@@ -1,10 +1,6 @@
-FROM ubuntu:14.04
+FROM ubuntu:14.04.3
 
-ENV UPDATED_AT 2014-11-17
-
-RUN apt-get update
-
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     git \
@@ -14,14 +10,17 @@ RUN apt-get install -y \
     libgmp10-dev \
     make
 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
+RUN curl --silent https://raw.githubusercontent.com/miyagawa/cpanminus/1.7039/cpanm | perl - App::cpanminus
+RUN cpanm Carton@v1.0.22
 
-RUN cpanm Carton
+WORKDIR /app
 
-RUN git clone https://github.com/CPAN-API/cpan-api.git /cpan-api/
+RUN git clone https://github.com/CPAN-API/cpan-api.git /app/
 
-WORKDIR /cpan-api/
+# Command is specifyed twice, becase it does not work otherwise.
+# (need to find out why and fix it)
+RUN carton install --deployment || carton install --deployment
 
-RUN carton install
+EXPOSE 5000
 
 CMD ["carton", "exec", "plackup", "-p", "5000", "-r"]

@@ -5,13 +5,9 @@
 # The basic things work, but there was no heavy testing.
 # This way of running is not officially supported.
 
-FROM ubuntu:14.04
+FROM ubuntu:14.04.3
 
-ENV UPDATED_AT 2014-11-04
-
-RUN apt-get update
-
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     git \
@@ -20,14 +16,15 @@ RUN apt-get install -y \
     libxml2-dev \
     make
 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
+RUN curl --silent https://raw.githubusercontent.com/miyagawa/cpanminus/1.7039/cpanm | perl - App::cpanminus
+RUN cpanm Carton@v1.0.22
 
-RUN cpanm Carton
+WORKDIR /app
 
-RUN git clone https://github.com/CPAN-API/metacpan-web.git /metacpan-web/
+RUN git clone https://github.com/CPAN-API/metacpan-web.git /app/
 
-WORKDIR /metacpan-web/
+RUN carton install --deployment
 
-RUN carton install
+EXPOSE 5001
 
 CMD ["carton", "exec", "plackup", "-p", "5001", "-r"]
