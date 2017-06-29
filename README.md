@@ -35,7 +35,7 @@ ready when the services start listening on the ports listed above.
 Don't forget to seed the local `metacpan-api` with a partial CPAN; run
 the following command in a separate terminal to get you up to speed:
 
-    bin/metacpan-docker localapi run --rm api index-cpan.sh
+    bin/metacpan-docker localapi exec api index-cpan.sh
 
 This will prompt you to confirm removing old indices and setting up
 mappings on the ElasticSearch service (say `YES`) then proceed to rsync
@@ -150,7 +150,7 @@ localapi up` runs:
 
 Running
 
-    bin/metacpan-docker localapi run --rm api partial-cpan-mirror.sh
+    bin/metacpan-docker localapi exec api partial-cpan-mirror.sh
 
 will `rsync` modules selected CPAN authors, plus the package and author
 indices, into the `api` service's `/CPAN` directory.  This is nearly
@@ -162,10 +162,10 @@ equivalent to the same script in the [metacpan-developer][7] repository.
 
 Running
 
-    bin/metacpan-docker localapi run --rm api bin/run bin/metacpan mapping --delete
-    bin/metacpan-docker localapi run --rm api bin/run bin/metacpan release /CPAN/authors/id
-    bin/metacpan-docker localapi run --rm api bin/run bin/metacpan latest
-    bin/metacpan-docker localapi run --rm api bin/run bin/metacpan author
+    bin/metacpan-docker localapi exec api bin/run bin/metacpan mapping --delete
+    bin/metacpan-docker localapi exec api bin/run bin/metacpan release /CPAN/authors/id
+    bin/metacpan-docker localapi exec api bin/run bin/metacpan latest
+    bin/metacpan-docker localapi exec api bin/run bin/metacpan author
 
 in sequence will create the indices and mappings in the `elasticsearch`
 service, and import the `/CPAN` data into `elasticsearch`.
@@ -174,14 +174,9 @@ service, and import the `/CPAN` data into `elasticsearch`.
 
 If you're impatient or lazy to do all the above, just running
 
-    bin/metacpan-docker localapi run --rm api index-cpan.sh
+    bin/metacpan-docker localapi exec api index-cpan.sh
     
 instead will set it all up for you.
-
-By the way, in case you're curious: these `localapi run` commands start
-a temporary container separate from the service containers; the `--rm`
-flag tells the underlying `docker-compose` to remove this container
-afterwards.
 
 #### elasticsearch and elasticsearch_test
 
@@ -219,13 +214,13 @@ a better part of a day or two, depending on your hardware.
 Use `bin/metacpan-docker run` and similar:
 
     # Run tests for metacpan-web against fastapi.metacpan.org
-    bin/metacpan-docker run --rm web bin/prove
+    bin/metacpan-docker exec web bin/prove
     
     # Run tests for metacpan-web against local api
-    bin/metacpan-docker localapi run --rm web bin/prove
+    bin/metacpan-docker localapi exec web bin/prove
 
     # Run tests for metacpan-api against local elasticsearch_test
-    bin/metacpan-docker localapi run --rm api bin/prove
+    bin/metacpan-docker localapi exec api bin/prove
 
 ### Updating Carton dependencies
 
@@ -234,9 +229,9 @@ clean [Perl][10] containers, it is possible to maintain a clean set of
 Carton dependencies independent of your host machine's perl.  Just
 update the `cpanfile` of the project, and run
 
-    bin/metacpan-docker run --rm web carton install
+    bin/metacpan-docker exec web carton install
     # or
-    bin/metacpan-docker run --rm api carton install 
+    bin/metacpan-docker exec api carton install 
     
 Due to the way the Compose services are configured, these commands will
 update the corresponding `cpanfile.snapshot` safely, even if you do _or_
