@@ -37,6 +37,10 @@ the following command in a separate terminal to get you up to speed:
 
     bin/metacpan-docker localapi run --rm api index-cpan.sh
 
+This will prompt you to confirm removing old indices and setting up
+mappings on the ElasticSearch service (say `YES`) then proceed to rsync
+a partial CPAN in `/CPAN` for its metadata to be imported.
+
 Once the above is done, you should be able to see your local partial
 CPAN data in e.g. http://localhost:5001/recent and elsewhere.
 
