@@ -234,9 +234,9 @@ clean [Perl][10] containers, it is possible to maintain a clean set of
 Carton dependencies independent of your host machine's perl.  Just
 update the `cpanfile` of the project, and run
 
-    bin/metacpan run --rm web carton install
+    bin/metacpan-docker run --rm web carton install
     # or
-    bin/metacpan run --rm api carton install 
+    bin/metacpan-docker run --rm api carton install 
     
 Due to the way the Compose services are configured, these commands will
 update the corresponding `cpanfile.snapshot` safely, even if you do _or_
