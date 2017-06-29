@@ -1,0 +1,29 @@
+cluster.name: 'dev'
+
+index:
+  number_of_replicas: 0
+  number_of_shards: 1
+  search:
+    slowlog:
+      threshold:
+        query:
+          warn: 10s
+          info: 2s
+        fetch:
+          warn: 1s
+
+gateway:
+  recover_after_nodes: 1
+  recover_after_time: 3m
+  expected_nodes: 1
+
+node:
+  max_local_storage_nodes: 1
+
+discovery:
+  zen:
+    minimum_master_nodes: 1
+    ping:
+      multicast.enabled: false
+      unicast.hosts:
+        - "elasticsearch:9300"

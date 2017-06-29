@@ -1,0 +1,1 @@
+_score - doc.documentation.value.length().toDouble()/100;
