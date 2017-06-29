@@ -117,8 +117,9 @@ configuration files aside from the default `docker-compose.yml`.
 #### `bin/metacpan-docker` build/up/down/start/stop/run/ps/top...
 
 As noted earlier, `bin/metacpan-docker` is a thin wrapper to
-`docker-compose`, so commands like `up`, `down`, and `run` will
-work as expected from `docker-compose`.  See the [docker-compose docs][6]
+`docker-compose`, so commands like `up`, `down`, and `run` will work as
+expected from `docker-compose`.  See the [docker-compose docs][6] for an
+overview of available commands.
 
 [6]: https://docs.docker.com/compose/reference/overview/#command-options-overview-and-help
 
