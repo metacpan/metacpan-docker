@@ -245,10 +245,11 @@ the host user's own `local` Carton directory.)
 
 By default, the `docker-compose.localapi.yml` configures the
 `elasticsearch` service to listen on the Docker host at
-http://localhost:9200; you can inspect it via simple `curl` or `wget`
-requests, or use a [Kibana][11] container, e.g.
+http://localhost:9200, and is also accessible via the Docker `default`
+network address of http://172.17.0.1:9200; you can inspect it via simple
+`curl` or `wget` requests, or use a [Kibana][11] container, e.g.
 
-    docker run --rm -p 5601:5601 -e ELASTICSEARCH_URL=http://localhost:9200 -it kibana:4.6 
+    docker run --rm -p 5601:5601 -e ELASTICSEARCH_URL=http://172.17.0.1:9200 -it kibana:4.6
 
 Running the above will provide a Kibana container at
 http://localhost:5601, which you can configure to have it read the
