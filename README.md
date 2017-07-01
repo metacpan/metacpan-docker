@@ -6,14 +6,16 @@ with your problems.
 
 ## Quick Start
 
-Install [Docker][0] and [Docker Compose][1] for your platform.  On Mac
-and Cheese (er, Windows) environments, [Docker Toolbox][2] will install
-both tools for you.  It is however, recommended to run directly on
-Linux, for native container support, and less issues overall.
+Install [Docker][0] and [Docker Compose][1] for your
+platform.  [Docker for Mac][2] or [Docker for Windows][3] will install
+both tools for you, if you are on either of these environments.  It is
+however, recommended to run directly on Linux, for native container
+support, and less issues overall.
 
 [0]: https://docs.docker.com/installation
 [1]: https://docs.docker.com/compose/install
-[2]: https://www.docker.com/products/docker-toolbox
+[2]: https://docs.docker.com/docker-for-mac/
+[3]: https://docs.docker.com/docker-for-windows/
 
 Then, clone this repo and setup the environment:
 
@@ -81,11 +83,11 @@ These services use one or more Docker volumes:
  * `metacpan_elasticsearch_test`: holds the ElasticSearch test database
    files
  * `metacpan_api_carton` and `metacpan_web_carton`: holds the
-   dependencies installed by [Carton][3] for the `api` and `web`
+   dependencies installed by [Carton][4] for the `api` and `web`
    services, respectively; mounted on `/carton` instead of `local`, to
    prevent clashing with the host user's Carton
    
-[3]: https://metacpan.org/pod/Carton
+[4]: https://metacpan.org/pod/Carton
  
 Docker Compose is used to, uh, _compose_ them all together into one
 system.  Using `docker-compose` directly is a mouthful, however, so
@@ -101,13 +103,13 @@ MetaCPAN environment. It provides these subcommands:
 
 #### `bin/metacpan init`
 
-The `init` subcommand basically clones the [metacpan-api][4]
-and [metacpan-web][5] repositories, and sets up the git commit hooks for
+The `init` subcommand basically clones the [metacpan-api][5]
+and [metacpan-web][6] repositories, and sets up the git commit hooks for
 each of them, in preparation for future `docker-compose` or
 `bin/metacpan-docker localapi` commands.
 
-[4]: https://github.com/metacpan/metacpan-api
-[5]: https://github.com/metacpan/metacpan-web
+[5]: https://github.com/metacpan/metacpan-api
+[6]: https://github.com/metacpan/metacpan-web
 
 #### `bin/metacpan localapi`
 
@@ -122,10 +124,10 @@ configuration files aside from the default `docker-compose.yml`.
 
 As noted earlier, `bin/metacpan-docker` is a thin wrapper to
 `docker-compose`, so commands like `up`, `down`, and `run` will work as
-expected from `docker-compose`.  See the [docker-compose docs][6] for an
+expected from `docker-compose`.  See the [docker-compose docs][7] for an
 overview of available commands.
 
-[6]: https://docs.docker.com/compose/reference/overview/#command-options-overview-and-help
+[7]: https://docs.docker.com/compose/reference/overview/#command-options-overview-and-help
 
 ### Services
 
@@ -154,9 +156,9 @@ Running
 
 will `rsync` modules selected CPAN authors, plus the package and author
 indices, into the `api` service's `/CPAN` directory.  This is nearly
-equivalent to the same script in the [metacpan-developer][7] repository.
+equivalent to the same script in the [metacpan-developer][8] repository.
     
-[7]: https://github.com/metacpan/metacpan-developer
+[8]: https://github.com/metacpan/metacpan-developer
 
 ##### Bootstrapping the `elasticsearch` indices
 
@@ -181,12 +183,12 @@ instead will set it all up for you.
 #### elasticsearch and elasticsearch_test
 
 The `elasticsearch` and `elasticsearch_test` services uses the
-official [ElasticSearch Docker image][8], configured with settings and
-scripts taken from the [metacpan-puppet][9] repository.  It is depended
+official [ElasticSearch Docker image][9], configured with settings and
+scripts taken from the [metacpan-puppet][10] repository.  It is depended
 on by the `api` service.
 
-[8]: https://store.docker.com/images/elasticsearch
-[9]: https://github.com/metacpan/metacpan-puppet
+[9]: https://store.docker.com/images/elasticsearch
+[10]: https://github.com/metacpan/metacpan-puppet
 
 ## Tips and tricks
 
@@ -225,7 +227,7 @@ Use `bin/metacpan-docker run` and similar:
 ### Updating Carton dependencies
 
 Because both the `api` and `web` services are running inside
-clean [Perl][10] containers, it is possible to maintain a clean set of
+clean [Perl][11] containers, it is possible to maintain a clean set of
 Carton dependencies independent of your host machine's perl.  Just
 update the `cpanfile` of the project, and run
 
@@ -239,7 +241,7 @@ don't have a `local` directory (internally, the containers' `local`
 directory is placed in `/carton` instead, to prevent interfering with
 the host user's own `local` Carton directory.)
 
-[10]: https://github.com/Perl/docker-perl
+[11]: https://github.com/Perl/docker-perl
     
 ### Running Kibana to peek into ElasticSearch data
 
@@ -247,7 +249,7 @@ By default, the `docker-compose.localapi.yml` configures the
 `elasticsearch` service to listen on the Docker host at
 http://localhost:9200, and is also accessible via the Docker `default`
 network address of http://172.17.0.1:9200; you can inspect it via simple
-`curl` or `wget` requests, or use a [Kibana][11] container, e.g.
+`curl` or `wget` requests, or use a [Kibana][12] container, e.g.
 
     docker run --rm -p 5601:5601 -e ELASTICSEARCH_URL=http://172.17.0.1:9200 -it kibana:4.6
 
@@ -258,7 +260,7 @@ http://localhost:5601, which you can configure to have it read the
 It is also certainly possible to run Kibana as part of the compose
 setup, by configuring e.g. a `kibana` service.
 
-[11]: https://hub.docker.com/_/kibana/
+[12]: https://hub.docker.com/_/kibana/
 
 ## To Do
 
