@@ -1,0 +1,64 @@
+version: '3'
+services:
+  web:
+    depends_on:
+      - api
+    environment:
+      - NET_ASYNC_HTTP_MAXCONNS=1
+    volumes:
+      - ./configs/metacpan-web/metacpan_web.conf:/metacpan-web/metacpan_web.conf
+  api:
+    depends_on:
+      - elasticsearch
+      - elasticsearch_test
+    image: metacpan-api:latest
+    build:
+      context: ./src/metacpan-api
+    environment:
+      - COLUMNS=80
+      - ES=elasticsearch:9200
+      - ES_TEST=elasticsearch_test:9200
+      - MINICPAN=/CPAN
+      - PLACK_ENV=development
+    volumes:
+      - cpan:/CPAN
+      - api_carton:/carton
+      - ./src/metacpan-api:/metacpan-api
+      - ./configs/metacpan-api/metacpan_server.conf:/metacpan-api/metacpan_server.conf
+      - ./configs/metacpan-api/metacpan.pl:/metacpan-api/etc/metacpan.pl
+      - ./bin/index-cpan.sh:/bin/index-cpan.sh
+      - ./bin/partial-cpan-mirror.sh:/bin/partial-cpan-mirror.sh
+    ports:
+      - "5000:5000"
+    networks:
+      - elasticsearch
+      - web
+  elasticsearch:
+    image: elasticsearch:2.4
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+      - ./elasticsearch/metacpan.yml:/usr/share/elasticsearch/config/metacpan.yml
+      - ./elasticsearch/scripts:/usr/share/elasticsearch/config/scripts
+    ports:
+      - "9200:9200"
+    networks:
+      - elasticsearch
+  elasticsearch_test:
+    image: elasticsearch:2.4
+    volumes:
+      - elasticsearch_test:/usr/share/elasticsearch/data
+      - ./elasticsearch/test.yml:/usr/share/elasticsearch/config/test.yml
+      - ./elasticsearch/scripts:/usr/share/elasticsearch/config/scripts
+    ports:
+      - "9900:9200"
+    networks:
+      - elasticsearch
+
+networks:
+  elasticsearch:
+
+volumes:
+  api_carton:
+  cpan:
+  elasticsearch:
+  elasticsearch_test:

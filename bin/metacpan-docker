@@ -1,0 +1,47 @@
+#!/bin/bash
+# metacpan-docker: simple wrapper for docker-compose running MetaCPAN
+
+set -e
+
+# sanity check
+type "docker" > /dev/null
+type "docker-compose" > /dev/null
+
+git_clone_and_setup_hooks() {
+    local repo=$1
+    (
+        cd src
+        [ -d "$repo" ] || git clone https://github.com/metacpan/$repo.git
+        cd $repo
+        [ -e git/hooks/pre-commit ] && chmod +x git/hooks/pre-commit
+        cd .git/hooks
+        ln -sf ../../git/hooks/pre-commit
+    )
+    echo "Repository $repo ready."
+}
+
+init() {
+    echo "Initializing metacpan-docker repositories:"
+    mkdir -p src
+    for repo in metacpan-api metacpan-web; do
+        git_clone_and_setup_hooks $repo
+    done
+    echo "metacpan-docker ready!  Run 'bin/metacpan-docker localapi up' to start."
+}
+
+case "x$1" in
+    'xinit')
+        init
+        exit
+        ;;
+    'xlocalapi')
+        export COMPOSE_FILE="docker-compose.yml:docker-compose.localapi.yml"
+        shift
+        ;;
+    *)
+        ;;
+esac
+
+export COMPOSE_PROJECT_NAME="metacpan"
+
+exec docker-compose "$@"

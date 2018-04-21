@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    image: metacpan-web:latest
+    build:
+      context: ./src/metacpan-web
+    environment:
+      - COLUMNS=80
+      - PLACK_ENV=development
+    volumes:
+      - web_carton:/carton
+      - ./src/metacpan-web:/metacpan-web
+    ports:
+      - "5001:5001"
+    networks:
+      - web
+
+networks:
+  web:
+
+volumes:
+  web_carton:
