@@ -4,9 +4,6 @@ services:
     image: metacpan-web:latest
     build:
       context: ./src/metacpan-web
-    environment:
-      - COLUMNS=80
-      - PLACK_ENV=development
     volumes:
       - web_carton:/carton
       - ./src/metacpan-web:/metacpan-web
