@@ -3,8 +3,8 @@ services:
   web:
     depends_on:
       - api
-    environment:
-      - NET_ASYNC_HTTP_MAXCONNS=1
+    env_file:
+      - localapi.env
     volumes:
       - ./configs/metacpan-web/metacpan_web.conf:/metacpan-web/metacpan_web.conf
   api:
@@ -14,12 +14,8 @@ services:
     image: metacpan-api:latest
     build:
       context: ./src/metacpan-api
-    environment:
-      - COLUMNS=80
-      - ES=elasticsearch:9200
-      - ES_TEST=elasticsearch_test:9200
-      - MINICPAN=/CPAN
-      - PLACK_ENV=development
+    env_file:
+      - localapi.env
     volumes:
       - cpan:/CPAN
       - api_carton:/carton
