@@ -1,6 +1,7 @@
-version: '3'
+version: '3.4'
 services:
   web:
+    image: metacpan-web:latest
     depends_on:
       - api
     env_file:
