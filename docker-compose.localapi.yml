@@ -1,6 +1,7 @@
-version: '3'
+version: '3.4'
 services:
   web:
+    image: metacpan-web:latest
     depends_on:
       - api
     env_file:
@@ -29,6 +30,7 @@ services:
     networks:
       - elasticsearch
       - web
+      - database
   elasticsearch:
     image: elasticsearch:2.4
     volumes:
@@ -49,12 +51,43 @@ services:
       - "9900:9200"
     networks:
       - elasticsearch
+  pgdb:
+    hostname: pgdb
+    image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
+    build:
+      context: './pg'
+      args:
+        PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
+    ports:
+      - "5432:5432"
+    networks:
+      - database
+    healthcheck:
+      interval: 10s
+      timeout: 1s
+      retries: 0
+      start_period: 480s
+      test: ["CMD", "/healthcheck.sh"]
+    volumes:
+      - type: volume
+        source: pgdb-data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./pg/docker-entrypoint-initdb.d
+        target: /docker-entrypoint-initdb.d
+        read_only: true
+      - type: bind
+        source: ./pg/healthcheck.sh
+        target: /healthcheck.sh
+        read_only: true
 
 networks:
   elasticsearch:
+  database:
 
 volumes:
   api_carton:
   cpan:
   elasticsearch:
   elasticsearch_test:
+  pgdb-data:
