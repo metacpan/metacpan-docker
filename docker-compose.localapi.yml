@@ -12,6 +12,7 @@ services:
     depends_on:
       - elasticsearch
       - elasticsearch_test
+      - pgdb
     image: metacpan-api:latest
     build:
       context: ./src/metacpan-api
