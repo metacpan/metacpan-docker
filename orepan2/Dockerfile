@@ -12,7 +12,4 @@ RUN apt-get install -y \
 
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
 
-# This is a fix, until this ticket is solved: https://github.com/tokuhirom/OrePAN2/pull/31
-RUN cpanm IO::Socket::SSL
-
 RUN cpanm OrePAN2
