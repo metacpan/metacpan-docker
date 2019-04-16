@@ -262,6 +262,24 @@ setup, by configuring e.g. a `kibana` service.
 
 [12]: https://hub.docker.com/_/kibana/
 
+## Peeking Inside the Container
+
+If you run `docker ps` you'll see the containers.  You might see something like:
+
+```
+$ docker ps
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                          PORTS                              NAMES
+2efb9c475c83        metacpan-web:latest   "carton exec plackup…"   12 hours ago        Up 12 hours                     0.0.0.0:5001->5001/tcp             metacpan_web_1
+8850110e06d8        metacpan-api:latest   "/wait-for-it.sh db:…"   12 hours ago        Up 12 hours                     0.0.0.0:5000->5000/tcp             metacpan_api_1
+7686d7ea03c6        postgres:9.6-alpine   "docker-entrypoint.s…"   12 hours ago        Up 12 hours (healthy)           0.0.0.0:5432->5432/tcp             metacpan_pgdb_1
+c7de256d29b2        elasticsearch:2.4     "/docker-entrypoint.…"   5 months ago        Up 26 hours                     0.0.0.0:9200->9200/tcp, 9300/tcp   metacpan_elasticsearch_1
+f1e04fe53598        elasticsearch:2.4     "/docker-entrypoint.…"   5 months ago        Up 26 hours                     9300/tcp, 0.0.0.0:9900->9200/tcp   metacpan_elasticsearch_test_1
+```
+
+You can then use the container name to get shell access.  For instance, to log in to the API container:
+
+`docker exec -it metacpan_api_1 /bin/bash`
+
 ## To Do
 
  * Integrate other MetaCPAN services (e.g. github-meets-cpan)
