@@ -12,4 +12,5 @@ RUN apt-get update \
 
 FROM perl:${PERL_VERSION}
 COPY --from=build /usr/local/lib/perl5 /usr/local/lib/perl5
+COPY --from=build /usr/local/bin /usr/local/bin
 COPY wait-for-it.sh /
