@@ -17,7 +17,7 @@ script:
   - docker build --pull --cache-from metacpan/metacpan-base --tag metacpan/metacpan-base .
 
 before_deploy:
-  - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASS"
+  - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWD"
 
 deploy:
   provider: script
