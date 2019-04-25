@@ -1,0 +1,13 @@
+notifications:
+  email:
+    recipients:
+      - leo@Wcuckoo.org
+    on_success: always
+    on_failure: always
+  irc: "irc.perl.org#metacpan-travis"
+
+script:
+  - cd base && docker build --tag metacpan-base .
+
+services:
+  - docker
