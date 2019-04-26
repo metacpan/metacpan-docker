@@ -3,9 +3,10 @@ services:
 
 env:
   global:
-    - DOCKER_HUB_NAME: metacpan/metacpan-base
+    - IMAGE_NAME: metacpan-base
+    - DOCKER_HUB_NAME: "metacpan/${IMAGE_NAME}"
     - VERSION: "${TRAVIS_BUILD_NUMBER}"
-    - TAG: "${DOCKER_HUB_NAME}:${VERSION}"
+    - VERSION_TAG: "${DOCKER_HUB_NAME}:${VERSION}"
 
 notifications:
   email:
@@ -22,18 +23,13 @@ before_script:
 # Perform build, make sure to pull image deps and build from the fetched version as cache
 script:
   - cd base
-  - docker build --pull --cache-from "$DOCKER_HUB_NAME" .
+  - docker build --pull --cache-from "$DOCKER_HUB_NAME" --tag $DOCKER_HUB_NAME --tag $VERSION_TAG .
 
 before_deploy:
   - docker login -u "$DOCKER_HUB_USER" -p "$DOCKER_HUB_PASSWD"
 
 # Deploy this build as a version AND as latest
 deploy:
-  - provider: script
-    script: 
-      - docker push "$TAG"
-    on:
-      branch: master
   - provider: script
     script: 
       - docker push "$DOCKER_HUB_NAME"
