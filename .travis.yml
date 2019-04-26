@@ -29,10 +29,13 @@ before_deploy:
 
 # Deploy this build as a version AND as latest
 deploy:
-  provider: script
-  script: 
-    - docker push "$TAG" 
-    - docker push "$DOCKER_HUB_NAME"
-  on:
-    branch: master
-
+  - provider: script
+    script: 
+      - docker push "$TAG"
+    on:
+      branch: master
+  - provider: script
+    script: 
+      - docker push "$DOCKER_HUB_NAME"
+    on:
+      branch: master
