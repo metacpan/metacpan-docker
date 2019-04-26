@@ -5,15 +5,139 @@ services:
     build:
       context: ./src/metacpan-web
     volumes:
-      - web_carton:/carton
-      - ./src/metacpan-web:/metacpan-web
+      - type: volume
+        source: web_carton
+        target: /carton
+      - type: bind
+        source: ./configs/metacpan-web/metacpan_web.conf
+        target: /metacpan-web/metacpan_web.conf
+        read_only: true
+      - type: bind
+        source: ./src/metacpan-web
+        target: /metacpan-web
+        read_only: true
     ports:
       - "5001:5001"
     networks:
       - web
+  api:
+    depends_on:
+      - elasticsearch
+      - elasticsearch_test
+      - pgdb
+    image: metacpan-api:latest
+    build:
+      context: ./src/metacpan-api
+    env_file:
+      - localapi.env
+    command: "/wait-for-it.sh ${PGDB} -- carton exec ${API_SERVER} ./bin/api.pl"
+    volumes:
+      - type: volume
+        source: cpan
+        target: /CPAN
+      - type: volume
+        source: api_carton
+        target: /carton
+      - type: bind
+        source: ./src/metacpan-api
+        target: /metacpan-api
+      - type: bind
+        source: ./configs/metacpan-api/metacpan_server.conf
+        target: /metacpan-api/metacpan_server.conf
+        read_only: true
+      - type: bind
+        source: ./configs/metacpan-api/metacpan.pl
+        target: /metacpan-api/etc/metacpan.pl
+        read_only: true
+      - type: bind
+        source: ./bin/index-cpan.sh
+        target: /bin/index-cpan.sh
+        read_only: true
+      - type: bind
+        source: ./bin/partial-cpan-mirror.sh
+        target: /bin/partial-cpan-mirror.sh
+        read_only: true
+    ports:
+      - "5000:5000"
+    networks:
+      - elasticsearch
+      - web
+      - database
+  elasticsearch:
+    image: elasticsearch:2.4
+    volumes:
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+      - type: bind
+        source: ./elasticsearch/metacpan.yml
+        target: /usr/share/elasticsearch/config/metacpan.yml
+        read_only: true
+      - type: bind
+        source: ./elasticsearch/scripts
+        target: /usr/share/elasticsearch/config/scripts
+        read_only: true
+    ports:
+      - "9200:9200"
+    networks:
+      - elasticsearch
+  elasticsearch_test:
+    image: elasticsearch:2.4
+    volumes:
+      - type: volume
+        source: elasticsearch_test
+        target: /usr/share/elasticsearch/data
+      - type: bind
+        source: ./elasticsearch/test.yml
+        target: /usr/share/elasticsearch/config/test.yml
+        read_only: true
+      - type: bind
+        source: ./elasticsearch/scripts
+        target: /usr/share/elasticsearch/config/scripts
+        read_only: true
+    ports:
+      - "9900:9200"
+    networks:
+      - elasticsearch
+  pgdb:
+    hostname: pgdb
+    image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
+    build:
+      context: './pg'
+      args:
+        PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
+    ports:
+      - "5432:5432"
+    networks:
+      - database
+    healthcheck:
+      interval: 10s
+      timeout: 1s
+      retries: 0
+      start_period: 480s
+      test: ["CMD", "/healthcheck.sh"]
+    volumes:
+      - type: volume
+        source: pgdb-data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./pg/docker-entrypoint-initdb.d
+        target: /docker-entrypoint-initdb.d
+        read_only: true
+      - type: bind
+        source: ./pg/healthcheck.sh
+        target: /healthcheck.sh
+        read_only: true
 
 networks:
+  elasticsearch:
+  database:
   web:
 
 volumes:
   web_carton:
+  api_carton:
+  cpan:
+  elasticsearch:
+  elasticsearch_test:
+  pgdb-data:
