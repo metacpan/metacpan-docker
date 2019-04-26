@@ -294,3 +294,6 @@ You can then use the container name to get shell access.  For instance, to log i
  * [Docker Compose documentation](https://docs.docker.com/compose/overview)
  * [metacpan-developer][7] and [metacpan-puppet][9] from which much
    information about the architecture is based on
+
+
+Test for travis - ignore
