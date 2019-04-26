@@ -30,14 +30,11 @@ services:
       context: ./src/metacpan-api
     env_file:
       - localapi.env
-    command: "/wait-for-it.sh ${PGDB} -- carton exec ${API_SERVER} ./bin/api.pl"
+    command: "/wait-for-it.sh ${PGDB} -- ${API_SERVER} ./bin/api.pl"
     volumes:
       - type: volume
         source: cpan
         target: /CPAN
-      - type: volume
-        source: api_carton
-        target: /carton
       - type: bind
         source: ./src/metacpan-api
         target: /metacpan-api
