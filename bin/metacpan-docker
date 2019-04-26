@@ -35,13 +35,10 @@ case "x$1" in
         exit
         ;;
     'xlocalapi')
-        export COMPOSE_FILE="docker-compose.yml:docker-compose.localapi.yml"
         shift
         ;;
     *)
         ;;
 esac
-
-export COMPOSE_PROJECT_NAME="metacpan"
 
 exec docker-compose "$@"
