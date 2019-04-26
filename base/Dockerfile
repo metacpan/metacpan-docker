@@ -6,9 +6,7 @@ COPY cpanfile cpanfile.snapshot /metacpan/
 
 RUN apt-get update \
     && apt-get install -y libgmp-dev rsync \
-    && cpanm App::cpm \
-    && cpm install -g Carton \
-    && cpm install -g
+    && cpanm App::cpm
 
 FROM perl:${PERL_VERSION}
 COPY --from=build /usr/local/lib/perl5 /usr/local/lib/perl5
