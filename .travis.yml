@@ -32,7 +32,6 @@ deploy:
   provider: script
   script: 
     - docker push "$TAG" 
-    - docker push "${DOCKER_HUB_NAME}:latest"
   on:
     branch: master
 
