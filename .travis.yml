@@ -1,0 +1,17 @@
+language: generic
+
+services:
+  - docker
+
+notifications:
+  irc: "irc.perl.org#metacpan-travis"
+
+## FIXME: this is just until local repo's build their own images
+before_script:
+  - bin/metacpan-docker init
+
+# Perform build, make sure to pull image deps and build from the fetched version as cache
+script:
+  - docker-compose up -d
+  - docker-compose ps
+
