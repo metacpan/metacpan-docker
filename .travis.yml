@@ -1,0 +1,27 @@
+language: python
+
+services:
+  - docker
+
+notifications:
+  irc: "irc.perl.org#metacpan-travis"
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.24.0
+
+# Install an up to date (ish) docker-compose
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+## FIXME: this is just until local repo's build their own images
+before_script:
+  - bin/metacpan-docker init
+
+# Perform build, make sure to pull image deps and build from the fetched version as cache
+script:
+  - docker-compose up -d
+  - docker-compose ps
+
