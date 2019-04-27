@@ -172,8 +172,6 @@ services:
       context: "./pg"
       args:
         PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
-    ports:
-      - "5432:5432"
     networks:
       - database
     healthcheck:
