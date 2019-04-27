@@ -1,5 +1,15 @@
-version: '3.4'
+version: "3.4"
 services:
+  logspout:
+    image: honeycombio/logspout-honeycomb:1.13
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    env_file:
+      - logging.env
+    ports:
+      - "8100:80"
   web:
     image: metacpan-web:latest
     build:
@@ -25,6 +35,7 @@ services:
       - elasticsearch
       - elasticsearch_test
       - pgdb
+      - logspout
     image: metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -62,6 +73,8 @@ services:
       - database
   elasticsearch:
     image: elasticsearch:2.4
+    depends_on:
+      - logspout
     volumes:
       - type: volume
         source: elasticsearch
@@ -80,6 +93,8 @@ services:
       - elasticsearch
   elasticsearch_test:
     image: elasticsearch:2.4
+    depends_on:
+      - logspout
     volumes:
       - type: volume
         source: elasticsearch_test
@@ -99,8 +114,10 @@ services:
   pgdb:
     hostname: pgdb
     image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
+    depends_on:
+      - logspout
     build:
-      context: './pg'
+      context: "./pg"
       args:
         PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
     ports:
