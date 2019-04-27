@@ -36,7 +36,7 @@ services:
 #
 
   web:
-    image: metacpan-web:latest
+    image: metacpan/metacpan-web:latest
     build:
       context: ./src/metacpan-web
     volumes:
@@ -70,7 +70,7 @@ services:
       - elasticsearch_test
       - pgdb
       - logspout
-    image: metacpan-api:latest
+    image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
     env_file:
