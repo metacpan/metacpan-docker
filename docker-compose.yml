@@ -273,7 +273,7 @@ services:
 #
 
   mongodb:
-    image: mvertes/alpine-mongo:latest
+    image: mongo:latest
     networks:
       - mongo
 
