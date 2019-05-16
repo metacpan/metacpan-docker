@@ -47,6 +47,13 @@ support, and less issues overall.
 [2]: https://docs.docker.com/docker-for-mac/
 [3]: https://docs.docker.com/docker-for-windows/
 
+On Linux, Docker's default implementation allows only `root` user to access
+docker commands and control containers. In order to allow a regular user to
+access docker follow the
+[post-installation instructions](https://docs.docker.com/install/linux/linux-postinstall/).
+This document assumes the post-installation steps have been followed for the
+current user.
+
 It is recommended that you alias `docker-compose` to `fig` (the rest of the
 document assumes you have done so). You are going to have to type this command
 a lot.
