@@ -1,4 +1,34 @@
-# Running the MetaCPAN stack with Docker (via Docker Compose)
+# MetaCPAN Docker
+
+
+<!-- vim-markdown-toc GFM -->
+
+* [Running the MetaCPAN stack with Docker (via Docker Compose)](#running-the-metacpan-stack-with-docker-via-docker-compose)
+* [Quick Start](#quick-start)
+* [System architecture](#system-architecture)
+  * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
+    * [`bin/metacpan init`](#binmetacpan-init)
+    * [`bin/metacpan localapi`](#binmetacpan-localapi)
+    * [`bin/metacpan-docker` build/up/down/start/stop/run/ps/top...](#binmetacpan-docker-buildupdownstartstoprunpstop)
+  * [Services](#services)
+    * [`web`](#web)
+    * [`api`](#api)
+      * [Setting up a partial CPAN in the `api` service](#setting-up-a-partial-cpan-in-the-api-service)
+      * [Bootstrapping the `elasticsearch` indices](#bootstrapping-the-elasticsearch-indices)
+      * [Putting the above all together](#putting-the-above-all-together)
+    * [elasticsearch and elasticsearch_test](#elasticsearch-and-elasticsearch_test)
+* [Tips and tricks](#tips-and-tricks)
+  * [Running your own miniCPAN inside metacpan-docker](#running-your-own-minicpan-inside-metacpan-docker)
+  * [Running tests](#running-tests)
+  * [Updating Carton dependencies](#updating-carton-dependencies)
+  * [Running Kibana to peek into ElasticSearch data](#running-kibana-to-peek-into-elasticsearch-data)
+* [Peeking Inside the Container](#peeking-inside-the-container)
+* [To Do](#to-do)
+* [See also](#see-also)
+
+<!-- vim-markdown-toc -->
+
+## Running the MetaCPAN stack with Docker (via Docker Compose)
 
 **Notice**: This project is in experimental stage. It works, but there
 are a lot of things to be done better. Please use it and create Issues
@@ -17,17 +47,33 @@ support, and less issues overall.
 [2]: https://docs.docker.com/docker-for-mac/
 [3]: https://docs.docker.com/docker-for-windows/
 
+It is recommended that you alias `docker-compose` to `fig` (the rest of the
+document assumes you have done so). You are going to have to type this command
+a lot.
+
 Then, clone this repo and setup the environment:
 
     git clone https://github.com/metacpan/metacpan-docker.git
     cd metacpan-docker
     bin/metacpan-docker init
 
-After this, you can run both the `metacpan-web` frontend on
+The `bin/metacpan-docker init` command clones the source repositories for:
+- `metacpan-web`
+- `metacpan-api`
+
+These repositories are automatically mounted in to the appropriate docker
+containers allowing the developer to use their preferred tools to work with the
+source code.
+
+The `fig up` command on its own will bring up the entire stack.
+
+After issuing `fig up`, you can run both the `metacpan-web` frontend on
 http://localhost:5001 and the `metacpan-api` backend on
 http://localhost:5000, with ElasticSearch on http://localhost:9200, via
 
-    bin/metacpan-docker localapi up
+The `fig up` command will fetch the official container images from
+[MetaCPAN Docker Hub](https://cloud.docker.com/u/metacpan/repository/list)
+repositories.
 
 This will build the Docker images for the MetaCPAN and ElasticSearch
 services (which will take a while, especially on a fresh first time
@@ -37,19 +83,20 @@ ready when the services start listening on the ports listed above.
 Don't forget to seed the local `metacpan-api` with a partial CPAN; run
 the following command in a separate terminal to get you up to speed:
 
-    bin/metacpan-docker localapi exec api index-cpan.sh
+    fig exec api index-cpan.sh
 
 This will prompt you to confirm removing old indices and setting up
 mappings on the ElasticSearch service (say `YES`) then proceed to rsync
 a partial CPAN in `/CPAN` for its metadata to be imported.
 
-Once the above is done, you should be able to see your local partial
-CPAN data in e.g. http://localhost:5001/recent and elsewhere.
+Once the above is done, you should be able to see your local partial CPAN data
+in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
+elsewhere.
 
 Alternatively, if you just want to hack on the web frontend, you can run
 this instead of all the above:
 
-    docker-compose up
+    fig up web
 
 From here, you can proceed and hack on the MetaCPAN code at
 `src/metacpan-api` and/or `src/metacpan-web` directories, and saving
@@ -58,9 +105,7 @@ edits will reload the corresponding apps automatically!
 When done hacking (or, more likely, when you need to rebuild/refresh
 your Docker environment) you can then run
 
-    bin/metacpan-docker localapi down
-    # or, if running the metacpan-web service only
-    docker-compose down 
+    fig down
 
 in another terminal to stop all MetaCPAN services and remove the
 containers.
@@ -75,7 +120,10 @@ The system consists of several services that live in docker containers:
  * `api` — the main server on http://localhost:5000
  * `elasticsearch` — database on http://localhost:9200
  * `elasticsearch_test` — test database on http://localhost:9300
- 
+ * `pgdb` - PostgreSQL database container
+ * `logspout` - Docker log interface to honeycomb.io
+ * `github-meets-cpan` - Containerized version of `gh.metacpan.org`
+
 These services use one or more Docker volumes:
 
  * `metacpan_cpan`: holds the CPAN archive, mounted in `/CPAN`
