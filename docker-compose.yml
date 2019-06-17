@@ -69,7 +69,6 @@ services:
       - elasticsearch
       - elasticsearch_test
       - pgdb
-      - logspout
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -86,6 +85,10 @@ services:
       - type: bind
         source: ./configs/metacpan-api/metacpan_server.conf
         target: /metacpan-api/metacpan_server.conf
+        read_only: true
+      - type: bind
+        source: ./configs/metacpan-api/metacpan_server.conf
+        target: /metacpan-api/metacpan_server_testing.conf
         read_only: true
       - type: bind
         source: ./configs/metacpan-api/metacpan.pl
@@ -173,8 +176,6 @@ services:
 
   elasticsearch:
     image: elasticsearch:2.4
-    depends_on:
-      - logspout
     volumes:
       - type: volume
         source: elasticsearch
@@ -207,8 +208,6 @@ services:
 
   elasticsearch_test:
     image: elasticsearch:2.4
-    depends_on:
-      - logspout
     volumes:
       - type: volume
         source: elasticsearch_test
@@ -237,8 +236,6 @@ services:
   pgdb:
     hostname: pgdb
     image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
-    depends_on:
-      - logspout
     build:
       context: "./pg"
       args:
