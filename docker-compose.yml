@@ -51,6 +51,10 @@ services:
         source: ./src/metacpan-web
         target: /metacpan-web
         read_only: true
+      - type: volume
+        source: web_var
+        target: /metacpan-web/var
+        read_only: false
     ports:
       - "5001:5001"
     networks:
@@ -302,6 +306,7 @@ networks:
 
 volumes:
   web_carton:
+  web_var:
   api_carton:
   cpan:
   elasticsearch:
