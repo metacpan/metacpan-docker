@@ -37,6 +37,10 @@ case "x$1" in
     'xlocalapi')
         shift
         ;;
+    'x')
+        init
+        exit
+        ;;
     *)
         ;;
 esac
