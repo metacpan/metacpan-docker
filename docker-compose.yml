@@ -173,9 +173,6 @@ services:
       context: ./src/metacpan-grep-front-end
     volumes:
       - type: volume
-        source: grep_carton
-        target: /carton
-      - type: volume
         source: metacpan_git_shared
         target: /shared/metacpan_git
         read_only: true
@@ -183,6 +180,8 @@ services:
         source: ./src/metacpan-grep-front-end
         target: /metacpan-grep-front-end
         read_only: true
+    env_file:
+      - grep.env
     ports:
       - "127.0.0.1:${GREP_SITE_PORT:-3001}:3000"
     networks:
@@ -332,7 +331,6 @@ networks:
 volumes:
   web_carton:
   api_carton:
-  grep_carton:
   cpan:
   elasticsearch:
   elasticsearch_test:
