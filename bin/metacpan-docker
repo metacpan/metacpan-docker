@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # metacpan-docker: simple wrapper for docker-compose running MetaCPAN
 
 set -e
+
+GitRepos=("metacpan-api" "metacpan-web")
 
 # sanity check
 type "docker" > /dev/null
@@ -23,15 +25,65 @@ git_clone_and_setup_hooks() {
 init() {
     echo "Initializing metacpan-docker repositories:"
     mkdir -p src
-    for repo in metacpan-api metacpan-web; do
+    for repo in ${GitRepos[@]}; do
         git_clone_and_setup_hooks $repo
     done
     echo "metacpan-docker ready!  Run 'bin/metacpan-docker localapi up' to start."
 }
 
+git_update_repo() {
+    local repo=$1
+    (
+        cd src/$repo
+        git fetch origin
+        git pull origin master
+    )
+    echo "Repository $repo updated."
+}
+
+git_reset_repo() {
+    local repo=$1
+    echo "Updating repository $repo"
+    (
+        cd src/$repo
+        git fetch origin
+        git checkout master
+        git pull origin master
+    )
+    echo "Repository $repo updated."
+}
+
+update() {
+    echo "Updating metacpan-docker repositories from upstream"
+
+    git fetch origin
+    git pull origin master
+
+    for repo in ${GitRepos[@]}; do
+        git_update_repo $repo
+    done
+}
+
+reset_repo() {
+    echo "Resetting metacpan-docker repositories:"
+
+    for repo in ${GitRepos[@]}; do
+        git_reset_repo $repo
+    done
+}
+
+
 case "x$1" in
     'xinit')
         init
+        exit
+        ;;
+    'xreset')
+        reset_repo
+        exit
+        ;;
+    'xpull')
+        update
         exit
         ;;
     'xlocalapi')
@@ -39,6 +91,7 @@ case "x$1" in
         ;;
     'x')
         init
+        update
         exit
         ;;
     *)
