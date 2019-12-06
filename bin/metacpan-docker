@@ -3,11 +3,17 @@
 
 set -e
 
-GitRepos=("metacpan-api" "metacpan-web")
+GitRepos=("metacpan-api" "metacpan-web" "metacpan-grep-front-end" "metacpan-cpan-extracted-lite")
 
 # sanity check
 type "docker" > /dev/null
 type "docker-compose" > /dev/null
+
+if [[ "x${METACPAN_ROOT}" -eq "x" ]]; then
+    export METACPAN_ROOT=$(pwd)
+    echo "Consider adding the following export to your .bashrc file:"
+    echo "export METACPAN_ROOT=${METACPAN_ROOT}"
+fi
 
 git_clone_and_setup_hooks() {
     local repo=$1
@@ -28,6 +34,9 @@ init() {
     for repo in ${GitRepos[@]}; do
         git_clone_and_setup_hooks $repo
     done
+
+    [ -e src/metacpan-cpan-extracted ] || ln -s metacpan-cpan-extracted-lite src/metacpan-cpan-extracted
+
     echo "metacpan-docker ready!  Run 'bin/metacpan-docker localapi up' to start."
 }
 

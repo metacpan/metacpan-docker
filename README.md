@@ -10,6 +10,7 @@
     * [`web`](#web)
     * [`api`](#api)
     * [`github-meets-cpan`](#github-meets-cpan)
+    * [`grep`](#grep)
     * [`ElasticSearch`](#elasticsearch)
 * [System architecture](#system-architecture)
   * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
@@ -23,6 +24,7 @@
       * [Bootstrapping the `elasticsearch` indices](#bootstrapping-the-elasticsearch-indices)
       * [Putting the above all together](#putting-the-above-all-together)
     * [elasticsearch and elasticsearch_test](#elasticsearch-and-elasticsearch_test)
+    * [`grep`](#grep-1)
 * [Tips and tricks](#tips-and-tricks)
   * [Running your own miniCPAN inside metacpan-docker](#running-your-own-minicpan-inside-metacpan-docker)
   * [Running tests](#running-tests)
@@ -71,6 +73,8 @@ The `bin/metacpan-docker init` command clones the source repositories for:
 
 - `metacpan-web`
 - `metacpan-api`
+- `metacpan-grep-front-end`
+- `metacpan-cpan-extracted-lite`
 
 These repositories are automatically mounted in to the appropriate docker
 containers allowing the developer to use their preferred tools to work with the
@@ -169,6 +173,14 @@ The local instance of the web front end is accessiable via
 The PostgreSQL and MongoDB services by default are only accessible from other
 containers.
 
+#### `grep`
+
+The grep metacpan front end is accessible via
+[http://localhost:3001](http://localhost:3001).
+
+Note: this is using smaller & frozen version of `metacpan-cpan-extracted` using
+[metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
+
 ## System architecture
 
 The system consists of several services that live in docker containers:
@@ -180,6 +192,7 @@ The system consists of several services that live in docker containers:
 - `pgdb` - PostgreSQL database container
 - `logspout` - Docker log interface to honeycomb.io
 - `github-meets-cpan` - Containerized version of `gh.metacpan.org`
+- `grep` - the web interface for grep.metacpan on http://localhost:3001
 
 These services use one or more Docker volumes:
 
@@ -190,6 +203,10 @@ These services use one or more Docker volumes:
   installed by [Carton][4] for the `api` and `web` services, respectively;
   mounted on `/carton` instead of `local`, to prevent clashing with the host
   user's Carton
+- `metacpan_git_shared`: points to the git repo containing all extracted CPAN
+  versions. This is mounted in `/shared/metacpan_git`.
+  This can be either `metacpan-cpan-extracted` or `metacpan-cpan-extracted-lite`.
+  The volume is bind to the local repo at `${METACPAN_ROOT}/src/metacpan-cpan-extracted`.
 
 [4]: https://metacpan.org/pod/Carton
 
@@ -223,6 +240,18 @@ to run both the `metacpan-web` and `metacpan-api` services, along with
 `docker-compose` to use additional YAML configuration files aside from the
 default `docker-compose.yml`.
 
+#### `bin/metacpan-docker pull`
+
+This is used to update all the git repository in `src/*`.
+This will stay on your current local branch.
+
+#### `bin/metacpan-docker reset`
+
+This is used to reset all the git repository in `src/*` to their
+last version on `upstream/master`.
+This will fail if you have some uncommited local changes.
+You should then commit or cancel your changes before re-running the command.
+
 #### `bin/metacpan-docker` build/up/down/start/stop/run/ps/top...
 
 As noted earlier, `bin/metacpan-docker` is a thin wrapper to `docker-compose`,
@@ -251,6 +280,16 @@ like the `web` service.
 If using this service to run a local backend, you will need to run some
 additional commands in a separate terminal once
 `bin/metacpan-docker localapi up` runs:
+
+#### `grep`
+
+The `grep` service is a checkout of `metacpan-grep-front-end`, built as a Docker image.
+Note that this is using `metacpan_git_shared` volume which required the `METACPAN_ROOT`
+environment variable to be set.
+
+By running `./bin/metacpan-docker init` you will be able to see the recommended value
+for METACPAN_ROOT or you can simply set it to your `metacpan-docker` current location
+by running `export METACPAN_ROOT=$(pwd)` from the 'metacpan-docker' root directory.
 
 ##### Setting up a partial CPAN in the `api` service
 
@@ -342,6 +381,10 @@ the corresponding `cpanfile.snapshot` safely, even if you do _or_ don't have a
 `local` directory (internally, the containers' `local` directory is placed in
 `/carton` instead, to prevent interfering with the host user's own `local`
 Carton directory.)
+
+### Updating the git repositories
+
+You can use `bin/metacpan-docker pull` to update all `src/*` directories.
 
 [11]: https://github.com/Perl/docker-perl
 
