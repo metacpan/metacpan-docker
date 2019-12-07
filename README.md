@@ -124,6 +124,22 @@ For further details, read on!
 
 ## Working with Containers
 
+### Building Containers
+
+You can (re)build arbitrary containers.  For instance, if you want to rebuild
+the `api` container:
+
+```
+docker-compose build api
+```
+
+If you want to be able to run tests against the `api` container, you'll need to
+install the test dependencies:
+
+```
+docker-compose build --build-arg CPM_ARGS='--with-test' api
+```
+
 ### Accessing Containers
 
 Containers are accessible via the `docker-compose exec` command followed by the
