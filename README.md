@@ -206,7 +206,7 @@ These services use one or more Docker volumes:
 - `metacpan_git_shared`: points to the git repo containing all extracted CPAN
   versions. This is mounted in `/shared/metacpan_git`.
   This can be either `metacpan-cpan-extracted` or `metacpan-cpan-extracted-lite`.
-  The volume is bind to the local repo at `${METACPAN_ROOT}/src/metacpan-cpan-extracted`.
+  The volume is bind to the local repo at `${PWD}/src/metacpan-cpan-extracted`.
 
 [4]: https://metacpan.org/pod/Carton
 
@@ -284,12 +284,10 @@ additional commands in a separate terminal once
 #### `grep`
 
 The `grep` service is a checkout of `metacpan-grep-front-end`, built as a Docker image.
-Note that this is using `metacpan_git_shared` volume which required the `METACPAN_ROOT`
-environment variable to be set.
+Note that this is using `metacpan_git_shared` volume which requires the git repo for
+`metacpan-cpan-extracted` which can be initialized by running:
 
-By running `./bin/metacpan-docker init` you will be able to see the recommended value
-for METACPAN_ROOT or you can simply set it to your `metacpan-docker` current location
-by running `export METACPAN_ROOT=$(pwd)` from the 'metacpan-docker' root directory.
+    ./bin/metacpan-docker init
 
 ##### Setting up a partial CPAN in the `api` service
 
