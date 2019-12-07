@@ -153,18 +153,34 @@ via:
 Each container is responsible for a different service. Some of these services
 are available in the developer environment via ports on the host system.
 
+We are using [traefik][13] to manage the trafic between services.
+The current configurations is the following:
+
+- api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
+- web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
+- github-meets-cpan: [http://gh.metacpan.localhost](http://gh.metacpan.localhost)
+- grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
+
+You can access the dashboard configuration via:
+[http://metacpan.localhost:8080](http://metacpan.localhost:8080)
+
+[0]: https://docs.traefik.io/providers/docker/
+
 #### `web`
 
 The local instance of the web front end is accessiable via
-[http://localhost:5001](http://localhost:5001).
+[http://localhost:5001](http://localhost:5001)
+[http://web.metacpan.localhost](http://web.metacpan.localhost)
 
 #### `api`
 
+[http://api.metacpan.localhost](http://api.metacpan.localhost)
 [http://localhost:5000](http://localhost:5000)
 
 #### `github-meets-cpan`
 
 [http://localhost:3000](http://localhost:3000)
+[http://gh.metacpan.localhost](http://gh.metacpan.localhost)
 
 #### `ElasticSearch`
 
@@ -176,7 +192,7 @@ containers.
 #### `grep`
 
 The grep metacpan front end is accessible via
-[http://localhost:3001](http://localhost:3001).
+[http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
 Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 [metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
