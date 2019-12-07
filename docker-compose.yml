@@ -338,6 +338,6 @@ volumes:
   metacpan_git_shared:
     driver_opts:
       type: none
-      device: ${METACPAN_ROOT}/src/metacpan-cpan-extracted
+      device: ${PWD}/src/metacpan-cpan-extracted
       o: bind
 
