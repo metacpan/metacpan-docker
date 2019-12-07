@@ -87,7 +87,7 @@ services:
         target: /metacpan-api/metacpan_server.conf
         read_only: true
       - type: bind
-        source: ./configs/metacpan-api/metacpan_server.conf
+        source: ./configs/metacpan-api/metacpan_server_testing.conf
         target: /metacpan-api/metacpan_server_testing.conf
         read_only: true
       - type: bind
