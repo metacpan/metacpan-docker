@@ -391,8 +391,4 @@ volumes:
   elasticsearch_test:
   pgdb-data:
   metacpan_git_shared:
-    driver_opts:
-      type: none
-      device: ${PWD}/src/metacpan-cpan-extracted
-      o: bind
-
+    external: true

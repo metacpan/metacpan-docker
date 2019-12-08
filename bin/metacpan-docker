@@ -31,6 +31,12 @@ init() {
 
     [ -e src/metacpan-cpan-extracted ] || ln -s metacpan-cpan-extracted-lite src/metacpan-cpan-extracted
 
+    docker volume create \
+        --opt type=none \
+        --opt device="$PWD/src/metacpan-cpan-extracted" \
+        --opt o=bind \
+        metacpan_git_shared
+
     echo "metacpan-docker ready!  Run 'bin/metacpan-docker localapi up' to start."
 }
 
