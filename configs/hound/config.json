@@ -1,0 +1,11 @@
+{
+    "max-concurrent-indexers" : 4,
+    "dbpath" : "data",
+    "health-check-uri" : "/health",
+    "repos" : {
+        "Meta-CPAN" : {
+            "url" : "https://github.com/metacpan/metacpan-cpan-extracted-lite.git",
+            "enable-push-updates" : true
+        }
+    }
+}

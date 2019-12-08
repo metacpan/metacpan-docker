@@ -237,6 +237,35 @@ services:
       - traefik.http.routers.grep.rule=Host(`grep.metacpan.localhost`)
       - traefik.http.services.grep-web.loadbalancer.server.port=3000
 
+#  _                           _
+# | |__   ___  _   _ _ __   __| |
+# | '_ \ / _ \| | | | '_ \ / _` |
+# | | | | (_) | |_| | | | | (_| |
+# |_| |_|\___/ \__,_|_| |_|\__,_|
+
+  hound:
+    depends_on:
+      - traefik
+    container_name: hound
+    image: 'etsy/hound:latest'
+    restart: always
+    ports:
+      - 3000:6080
+    volumes:
+      - type: bind
+        source: ./configs/hound/config.json
+        target: /data/config.json
+        read_only: true
+      - type: volume
+        source: metacpan_git_shared
+        target: /shared/metacpan_git
+        read_only: true
+    networks:
+      - traefik-network
+    labels:
+      - traefik.http.routers.hound.rule=Host(`hound.metacpan.localhost`)
+      - traefik.http.services.hound.loadbalancer.server.port=3000
+
 #  ____    _  _____  _    ____    _    ____  _____ ____
 # |  _ \  / \|_   _|/ \  | __ )  / \  / ___|| ____/ ___|
 # | | | |/ _ \ | | / _ \ |  _ \ / _ \ \___ \|  _| \___ \
@@ -394,5 +423,10 @@ volumes:
     driver_opts:
       type: none
       device: ${PWD}/src/metacpan-cpan-extracted
+      o: bind
+  hound_data:
+    driver_opts:
+      type: none
+      device: ${PWD}/src/hound-data
       o: bind
 

@@ -12,6 +12,7 @@
     * [`github-meets-cpan`](#github-meets-cpan)
     * [`grep`](#grep)
     * [`ElasticSearch`](#elasticsearch)
+    * [`hound`](#hound)
 * [System architecture](#system-architecture)
   * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
     * [`bin/metacpan init`](#binmetacpan-init)
@@ -25,6 +26,7 @@
       * [Putting the above all together](#putting-the-above-all-together)
     * [elasticsearch and elasticsearch_test](#elasticsearch-and-elasticsearch_test)
     * [`grep`](#grep-1)
+    * [`hound`](#hound-1)
 * [Tips and tricks](#tips-and-tricks)
   * [Running your own miniCPAN inside metacpan-docker](#running-your-own-minicpan-inside-metacpan-docker)
   * [Running tests](#running-tests)
@@ -124,6 +126,22 @@ For further details, read on!
 
 ## Working with Containers
 
+### Building Containers
+
+You can (re)build arbitrary containers.  For instance, if you want to rebuild
+the `api` container:
+
+```
+docker-compose build api
+```
+
+If you want to be able to run tests against the `api` container, you'll need to
+install the test dependencies:
+
+```
+docker-compose build --build-arg CPM_ARGS='--with-test' api
+```
+
 ### Accessing Containers
 
 Containers are accessible via the `docker-compose exec` command followed by the
@@ -169,6 +187,7 @@ enter these entries in you `/etc/hosts` file.
 127.0.0.1   api.metacpan.localhost
 127.0.0.1   gh.metacpan.localhost
 127.0.0.1   grep.metacpan.localhost
+127.0.0.1   hound.metacpan.localhost
 127.0.0.1   metacpan.localhost
 127.0.0.1   web.metacpan.localhost
 ```
@@ -209,6 +228,15 @@ The grep metacpan front end is accessible via
 Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 [metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
 
+#### `hound`
+
+This a an experiment to replace `grep` using [hound][https://github.com/hound-search/hound]
+You can access to the service via:
+[http://hound.metacpan.localhost](http://hound.metacpan.localhost)
+
+To check hound status there is a custom route:
+[http://hound.metacpan.localhost/health](http://hound.metacpan.localhost/health)
+
 ## System architecture
 
 The system consists of several services that live in docker containers:
@@ -220,7 +248,8 @@ The system consists of several services that live in docker containers:
 - `pgdb` - PostgreSQL database container
 - `logspout` - Docker log interface to [honeycomb.io](https://honeycomb.io)
 - `github-meets-cpan` - Containerized version of [gh.metacpan.org](https://gh.metacpan.org)
-- `grep` - the web interface for grep.metacpan on [http://localhost:3001](http://localhost:3001)
+- `grep` - the web interface for grep.metacpan on [grep.metacpan.localhost](http://grep.metacpan.localhost)
+- `hound` - hound search engine for the cpan extracted repo [hound.metacpan.localhost](http://hound.metacpan.localhost)
 
 These services use one or more Docker volumes:
 
