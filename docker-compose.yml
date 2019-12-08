@@ -22,7 +22,11 @@ services:
     networks:
       - traefik-network
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      # Do not expose containers unless explicitly told so
+      - "--providers.docker.exposedbydefault=false"
     ports:
       # The HTTP port
       - "80:80"
@@ -50,8 +54,6 @@ services:
       - logging.env
     ports:
       - "8100:80"
-    labels:
-      - "traefik.enable=false"
 
 #               _
 # __      _____| |__
@@ -86,8 +88,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
-      - traefik.http.routers.web.rule=Host(`web.metacpan.localhost`)
-      - traefik.http.services.web.loadbalancer.server.port=5001
+      - "traefik.http.routers.web.rule=Host(`web.metacpan.localhost`)"
+      - "traefik.http.services.web.loadbalancer.server.port=5001"
 
 #              _
 #   __ _ _ __ (_)
@@ -146,8 +148,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
-      - traefik.http.routers.api.rule=Host(`api.metacpan.localhost`)
-      - traefik.http.services.api.loadbalancer.server.port=5000
+      - "traefik.http.routers.api.rule=Host(`api.metacpan.localhost`)"
+      - "traefik.http.services.api.loadbalancer.server.port=5000"
 
 #        _ _   _           _                           _
 #   __ _(_) |_| |__  _   _| |__    _ __ ___   ___  ___| |_ ___
@@ -175,8 +177,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
-      - traefik.http.routers.github-meets-cpan.rule=Host(`gh.metacpan.localhost`)
-      - traefik.http.services.gh-meet-cpan-web.loadbalancer.server.port=3000
+      - "traefik.http.routers.github-meets-cpan.rule=Host(`gh.metacpan.localhost`)"
+      - "traefik.http.services.gh-meet-cpan-web.loadbalancer.server.port=3000"
 
 #        _ _   _           _                           _
 #   __ _(_) |_| |__  _   _| |__    _ __ ___   ___  ___| |_ ___
@@ -204,8 +206,6 @@ services:
         read_only: true
     networks:
       - mongo
-    labels:
-      - "traefik.enable=false"
 
 #   __ _ _ __ ___ _ __
 #  / _` | '__/ _ \ '_ \
@@ -234,8 +234,9 @@ services:
     networks:
       - traefik-network
     labels:
-      - traefik.http.routers.grep.rule=Host(`grep.metacpan.localhost`)
-      - traefik.http.services.grep-web.loadbalancer.server.port=3000
+      - "traefik.enable=true"
+      - "traefik.http.routers.grep.rule=Host(`grep.metacpan.localhost`)"
+      - "traefik.http.services.grep-web.loadbalancer.server.port=3000"
 
 #  ____    _  _____  _    ____    _    ____  _____ ____
 # |  _ \  / \|_   _|/ \  | __ )  / \  / ___|| ____/ ___|
@@ -269,8 +270,6 @@ services:
       - "9200:9200"
     networks:
       - elasticsearch
-    labels:
-      - "traefik.enable=false"
 
 #       _           _   _                              _
 #   ___| | __ _ ___| |_(_) ___ ___  ___  __ _ _ __ ___| |__
@@ -303,8 +302,6 @@ services:
       - "9900:9200"
     networks:
       - elasticsearch
-    labels:
-      - "traefik.enable=false"
 #                  _                            _
 #  _ __   ___  ___| |_ __ _ _ __ ___  ___  __ _| |
 # | '_ \ / _ \/ __| __/ _` | '__/ _ \/ __|/ _` | |
@@ -340,8 +337,7 @@ services:
         source: ./pg/healthcheck.sh
         target: /healthcheck.sh
         read_only: true
-    labels:
-      - "traefik.enable=false"
+
 #                                        _ _
 #  _ __ ___   ___  _ __   __ _  ___   __| | |__
 # | '_ ` _ \ / _ \| '_ \ / _` |/ _ \ / _` | '_ \
@@ -360,8 +356,7 @@ services:
       retries: 0
       start_period: 40s
       test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
-    labels:
-      - "traefik.enable=false"
+
 #  _   _ _____ _______        _____  ____  _  ______
 # | \ | | ____|_   _\ \      / / _ \|  _ \| |/ / ___|
 # |  \| |  _|   | |  \ \ /\ / / | | | |_) | ' /\___ \
