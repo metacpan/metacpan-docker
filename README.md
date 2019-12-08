@@ -177,6 +177,18 @@ The current configurations is the following:
 - github-meets-cpan: [http://gh.metacpan.localhost](http://gh.metacpan.localhost)
 - grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
+In order to access to the localhost subdomains, you probably have to manually
+enter these entries in you `/etc/hosts` file.
+
+```
+# add to /etc/hosts
+127.0.0.1   api.metacpan.localhost
+127.0.0.1   gh.metacpan.localhost
+127.0.0.1   grep.metacpan.localhost
+127.0.0.1   metacpan.localhost
+127.0.0.1   web.metacpan.localhost
+```
+
 You can access the dashboard configuration via:
 [http://metacpan.localhost:8080](http://metacpan.localhost:8080)
 
