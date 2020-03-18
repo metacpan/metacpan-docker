@@ -1,0 +1,22 @@
+---
+name: docker-compose up
+
+on:
+  - push
+
+jobs:
+  build:
+    name: init and up
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+    steps:
+      - uses: actions/checkout@v1
+      - name: mkdir
+        run: mkdir -p src/metacpan-cpan-extracted
+      - name: init
+        run: bin/metacpan-docker init
+      - name: up
+        run: docker-compose up -d
+      - name: ps
+        run: docker-compose ps
