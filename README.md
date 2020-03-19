@@ -1,6 +1,6 @@
 # MetaCPAN Docker
 
-![.github/workflows/dzil-build-and-test.yml](https://github.com/metacpan/metacpan-docker/workflows/.github/workflows/dzil-build-and-test.yml/badge.svg)
+![docker-compose up](https://github.com/metacpan/metacpan-docker/workflows/docker-compose%20up/badge.svg?branch=master)
 
 <!-- vim-markdown-toc GFM -->
 
