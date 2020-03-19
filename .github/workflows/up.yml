@@ -2,8 +2,10 @@
 name: docker-compose up
 
 on:
-  - push
-
+  push:
+    branches: "*"
+  schedule:
+    - cron: "5 4 * * *"
 jobs:
   build:
     name: init and up
