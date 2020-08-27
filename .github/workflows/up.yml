@@ -14,13 +14,36 @@ jobs:
       max-parallel: 1
     steps:
       - uses: actions/checkout@v1
-      - name: mkdir
-        run: mkdir -p src/metacpan-cpan-extracted
+
       - name: init
         run: bin/metacpan-docker init
-      - name: up
+
+      - name: up api_test
         run: docker-compose up -d api_test
       - name: down
         run: docker-compose down
-      - name: ps
-        run: docker-compose ps
+
+      - name: up api
+        run: docker-compose up -d api
+      - name: down
+        run: docker-compose down
+
+      - name: up github-meets-cpan
+        run: docker-compose up -d github-meets-cpan
+      - name: down
+        run: docker-compose down
+
+      - name: up github-meets-cpan-cron
+        run: docker-compose up -d github-meets-cpan-cron
+      - name: down
+        run: docker-compose down
+
+      - name: up web
+        run: docker-compose up -d web
+      - name: down
+        run: docker-compose down
+
+      - name: up grep
+        run: docker-compose up -d grep
+      - name: down
+        run: docker-compose down
