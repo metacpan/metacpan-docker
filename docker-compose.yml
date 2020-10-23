@@ -314,7 +314,7 @@ services:
         target: /usr/share/elasticsearch/config/scripts
         read_only: true
     ports:
-      - "9200:9200"
+      - "9200"
     networks:
       - elasticsearch
 
@@ -346,7 +346,7 @@ services:
         target: /usr/share/elasticsearch/config/scripts
         read_only: true
     ports:
-      - "9200:9200"
+      - "9200"
     networks:
       - elasticsearch_test
   #                  _                            _
