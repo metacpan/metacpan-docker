@@ -364,6 +364,8 @@ services:
       context: "./pg"
       args:
         PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
+    environment:
+      POSTGRES_PASSWORD: metacpan
     networks:
       - database
     healthcheck:
