@@ -18,13 +18,13 @@ jobs:
       - name: init
         run: bin/metacpan-docker init
 
-      - name: up api_test
-        run: docker-compose up -d api_test
+      - name: up api
+        run: docker-compose up -d api
       - name: down
         run: docker-compose down
 
-      - name: up api
-        run: docker-compose up -d api
+      - name: up apitest
+        run: docker-compose up -d apitest
       - name: down
         run: docker-compose down
 
