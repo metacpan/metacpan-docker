@@ -1,0 +1,26 @@
+---
+name: docker-compose up
+
+on:
+  push:
+  schedule:
+    # Every Sunday morning
+    - cron: "15 4 * * *"
+jobs:
+  build:
+    name: init and up
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: init
+        run: bin/metacpan-docker init
+
+      - name: up apitest
+        run: docker-compose up -d apitest
+      - name: run tests
+        run: docker-compose exec apitest -- carton exec prove -lvr t/
+      - name: down
+        run: docker-compose down
