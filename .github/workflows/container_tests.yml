@@ -21,6 +21,6 @@ jobs:
       - name: up apitest
         run: docker-compose up -d apitest
       - name: run tests
-        run: docker-compose exec apitest -- carton exec prove -lvr t/
+        run: docker-compose exec apitest carton exec -- prove -lvr t/
       - name: down
         run: docker-compose down
