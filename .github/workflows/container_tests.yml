@@ -19,7 +19,7 @@ jobs:
         run: bin/metacpan-docker init
 
       - name: start environment
-        run: docker-compose up --exit-code-from apitest
+        run: docker-compose up -d --exit-code-from apitest apitest
       - name: run tests
         run: docker-compose exec -T apitest carton exec -- prove -lvr t/
       - name: down
