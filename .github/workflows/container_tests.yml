@@ -1,5 +1,5 @@
 ---
-name: docker-compose up
+name: docker-compose container tests
 
 on:
   push:
@@ -21,6 +21,6 @@ jobs:
       - name: up apitest
         run: docker-compose up -d apitest
       - name: run tests
-        run: docker-compose exec apitest carton exec -- prove -lvr t/
+        run: docker-compose exec -T apitest carton exec -- prove -lvr t/
       - name: down
         run: docker-compose down
