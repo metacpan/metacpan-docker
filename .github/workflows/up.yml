@@ -23,8 +23,8 @@ jobs:
       - name: down
         run: docker-compose down
 
-      - name: up apitest
-        run: docker-compose up -d apitest
+      - name: up api_test
+        run: docker-compose up -d api_test
       - name: down
         run: docker-compose down
 

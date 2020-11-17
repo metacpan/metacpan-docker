@@ -152,7 +152,7 @@ services:
       - "traefik.http.routers.api.rule=Host(`api.metacpan.localhost`)"
       - "traefik.http.services.api.loadbalancer.server.port=5000"
 
-  apitest:
+  api_test:
     depends_on:
       - elasticsearch_test
       - pgdb
