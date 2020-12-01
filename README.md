@@ -1,6 +1,6 @@
 # MetaCPAN Docker
 
-[![CircleCI](https://circleci.com/gh/metacpan/metacpan-docker.svg?style=svg)](https://circleci.com/gh/metacpan/metcpan-docker)
+[![CircleCI](https://circleci.com/gh/metacpan/metacpan-docker.svg?style=svg)](https://circleci.com/gh/metacpan/metacpan-docker)
 
 ![docker-compose up](https://github.com/metacpan/metacpan-docker/workflows/docker-compose%20up/badge.svg?branch=master)
 
