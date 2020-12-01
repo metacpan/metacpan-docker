@@ -52,6 +52,7 @@ jobs:
           command: |
             pushd metacpan-docker
             docker-compose exec -T api_test prove -lr --jobs 2 t
+            docker-compose down
       - run:
           command: |
             pushd metacpan-docker
