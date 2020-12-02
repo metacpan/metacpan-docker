@@ -52,6 +52,7 @@ jobs:
           command: |
             pushd metacpan-docker
             docker-compose exec -T api_test prove -lr --jobs 2 t
+            docker-compose down
       - run:
           command: |
             pushd metacpan-docker
@@ -60,3 +61,13 @@ jobs:
             docker ps -a | head
           name: docker-compose logs
           when: on_fail
+      - run:
+          command: |
+            pushd metacpan-docker
+            docker-compose --verbose up -d github-meets-cpan
+          name: github-meets-cpan up
+      - run:
+          command: |
+            pushd metacpan-docker
+            docker-compose exec -T github-meets-cpan prove -lr --jobs 2 t
+            docker-compose down
