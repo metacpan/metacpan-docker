@@ -109,7 +109,7 @@ services:
     env_file:
       - localapi.env
     command: >
-      /metacpan-api/wait-for-es.sh http://elasticsearch:9200 --
+      /metacpan-api/wait-for-es.sh http://elasticsearch:9200 "" --
       /metacpan-api/wait-for-it.sh -t 15 -s ${PGDB} --
       ${API_SERVER} ./bin/api.pl
     volumes:
@@ -162,7 +162,7 @@ services:
     env_file:
       - localapi_test.env
     command: >
-      /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 --
+      /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 "" --
       /metacpan-api/wait-for-it.sh -t 15 -s ${PGDB} --
       ${API_SERVER} ./bin/api.pl
     volumes:
