@@ -19,25 +19,17 @@ jobs:
             sudo chmod +x /home/circleci/bin/docker-compose
             which docker-compose
             docker-compose --version
+      - checkout
       - run:
           command: |
-            git clone https://github.com/metacpan/metacpan-docker.git
-            cd metacpan-docker
-            git checkout ${CIRCLE_BRANCH}
-          name: metacpan-docker checkout
-      - run:
-          command: |
-            pushd metacpan-docker
             ./bin/metacpan-docker init
           name: clone missing repositories
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose build api_test
           name: compose build
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose --verbose up -d api_test
           name: compose up
       # Since we're running docker-compose -d, we don't actually know if
@@ -45,17 +37,14 @@ jobs:
       # probably need to wait for it here, so we'll add our own check.
       - run:
           command: |
-            pushd metacpan-docker
             ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test --
           name: wait for ES
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose exec -T api_test prove -lr --jobs 2 t
             docker-compose down
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose logs
             docker stats --no-stream
             docker ps -a | head
@@ -63,11 +52,9 @@ jobs:
           when: on_fail
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose --verbose up -d github-meets-cpan
           name: github-meets-cpan up
       - run:
           command: |
-            pushd metacpan-docker
             docker-compose exec -T github-meets-cpan prove -lr --jobs 2 t
             docker-compose down
