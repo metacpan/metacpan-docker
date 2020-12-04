@@ -26,10 +26,6 @@ jobs:
           name: clone missing repositories
       - run:
           command: |
-            docker-compose build api_test
-          name: compose build
-      - run:
-          command: |
             docker-compose --verbose up -d api_test
           name: compose up
       # Since we're running docker-compose -d, we don't actually know if
