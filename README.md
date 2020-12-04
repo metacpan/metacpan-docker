@@ -15,7 +15,7 @@
         * [`web`](#web)
         * [`api`](#api)
         * [`github-meets-cpan`](#github-meets-cpan)
-        * [`ElasticSearch`](#elasticsearch)
+        * [`Elasticsearch`](#elasticsearch)
         * [`grep`](#grep)
 * [System architecture](#system-architecture)
     * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
@@ -60,8 +60,8 @@ on either of these environments.
 [2]: https://docs.docker.com/docker-for-mac/
 [3]: https://docs.docker.com/docker-for-windows/
 
-On Linux, Docker's default implementation allows only `root` user to access
-docker commands and control containers. In order to allow a regular user to
+On Linux, Docker's default implementation only allows `root` user access to
+Docker commands and to control containers. In order to allow a regular user to
 access docker follow the
 [post-installation instructions](https://docs.docker.com/install/linux/linux-postinstall/).
 This document assumes the post-installation steps have been followed for the
@@ -71,7 +71,7 @@ It is highly recommended that you alias `docker-compose` to `fig` (its original
 name) and use it wherever `docker-compose` is used. You are going to have to
 type this command a lot.
 
-Then, clone this repo and setup the environment:
+Then, clone this repo and set up the environment:
 
     git clone https://github.com/metacpan/metacpan-docker.git
     cd metacpan-docker
@@ -84,7 +84,7 @@ The `bin/metacpan-docker init` command clones the source repositories for:
 - `metacpan-grep-front-end`
 - `metacpan-cpan-extracted-lite`
 
-These repositories are automatically mounted in to the appropriate docker
+These repositories are automatically mounted into the appropriate docker
 containers allowing the developer to use their preferred tools to work with the
 source code.
 
@@ -95,7 +95,7 @@ The `docker-compose up` command will also fetch the official container images fr
 [MetaCPAN Docker Hub](https://cloud.docker.com/u/metacpan/repository/list)
 repositories.
 
-This will build the Docker containers for MetaCPAN, PostgreSQL and ElasticSearch
+This will build the Docker containers for MetaCPAN, PostgreSQL and Elasticsearch
 services (which will take a while, especially on a fresh first time install of
 Docker) and run the services.
 
@@ -105,7 +105,7 @@ following command in a separate terminal to get yourself up to speed:
     docker-compose exec api index-cpan.sh
 
 This will prompt you to confirm removing old indices and setting up mappings on
-the ElasticSearch service (say `YES`).  It will then proceed to rsync a partial CPAN in
+the Elasticsearch service (say `YES`).  It will then proceed to rsync a partial CPAN in
 `/CPAN` for its metadata to be imported.
 
 Once the above is done, you should be able to see your local partial CPAN data
@@ -141,13 +141,6 @@ the `api` container:
 docker-compose build api
 ```
 
-If you want to be able to run tests against the `api` container, you'll need to
-install the test dependencies:
-
-```
-docker-compose build --build-arg CPM_ARGS='--with-test' api
-```
-
 ### Accessing Containers
 
 Containers are accessible via the `docker-compose exec` command followed by the
@@ -158,7 +151,7 @@ in the `api` container:
 
 Executing tests via `prove` inside the API container:
 
-    docker-compose exec api prove -lvr \
+    docker-compose exec api_test prove -lvr \
       t/00_setup.t \
       t/01_darkpan.t \
       t/api/controller/cover.t
@@ -177,8 +170,8 @@ via:
 Each container is responsible for a different service. Some of these services
 are available in the developer environment via ports on the host system.
 
-We are using [traefik][13] to manage the trafic between services.
-The current configurations is the following:
+We are using [traefik][13] to manage the traffic between services.
+The current configuration is:
 
 - api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
 - web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
@@ -186,7 +179,7 @@ The current configurations is the following:
 - grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
 In order to access to the localhost subdomains, you probably have to manually
-enter these entries in you `/etc/hosts` file.
+add these entries in you `/etc/hosts` file.
 
 ```
 # add to /etc/hosts
@@ -204,31 +197,47 @@ You can access the dashboard configuration via:
 
 #### `web`
 
-The local instance of the web front end is accessiable via
-[http://localhost:5001](http://localhost:5001)
-[http://web.metacpan.localhost](http://web.metacpan.localhost)
+The local instance of the web front end is accessiable via:
+
+* [http://localhost:5001](http://localhost:5001)
+* [http://web.metacpan.localhost](http://web.metacpan.localhost)
 
 #### `api`
 
-[http://api.metacpan.localhost](http://api.metacpan.localhost)
-[http://localhost:5000](http://localhost:5000)
+* [http://localhost:5000](http://localhost:5000)
+* [http://api.metacpan.localhost](http://api.metacpan.localhost)
 
 #### `github-meets-cpan`
 
-[http://localhost:3000](http://localhost:3000)
-[http://gh.metacpan.localhost](http://gh.metacpan.localhost)
+* [http://localhost:3000](http://localhost:3000)
+* [http://gh.metacpan.localhost](http://gh.metacpan.localhost)
 
-#### `ElasticSearch`
+#### `Elasticsearch`
 
-[http://localhost:9200](http://localhost:9200)
+The `elasticsearch` and `elasticsearch_test` containers are not exposed directly. They are available via the `api` and `api_test` containers.
+
+You can query the `elasticsearch` container via:
+
+```
+docker-compose exec elasticsearch curl http://localhost:9200
+```
+
+You can query the `elasticsearch_test` container via:
+
+```
+docker-compose exec elasticsearch_test curl http://localhost:9200
+```
+
+#### `PostgreSQL and MongoDB`
 
 The PostgreSQL and MongoDB services by default are only accessible from other
 containers.
 
 #### `grep`
 
-The grep metacpan front end is accessible via
-[http://grep.metacpan.localhost](http://grep.metacpan.localhost)
+The grep metacpan front end is accessible via:
+
+* [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
 Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 [metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
@@ -239,8 +248,9 @@ The system consists of several services that live in docker containers:
 
 - `web` — the web interface on [http://localhost:5001](http://localhost:5001)
 - `api` — the main server on [http://localhost:5000](http://localhost:5000)
-- `elasticsearch` — database on [http://localhost:9200](http://localhost:9200)
-- `elasticsearch_test` — test database on [http://localhost:9300](http://localhost:9300)
+- `api_test` — the api server for running tests via `prove`
+- `elasticsearch` — database for `api`
+- `elasticsearch_test` — database for `api_test`
 - `pgdb` - PostgreSQL database container
 - `logspout` - Docker log interface to [honeycomb.io](https://honeycomb.io)
 - `github-meets-cpan` - Containerized version of [gh.metacpan.org](https://gh.metacpan.org)
@@ -249,8 +259,8 @@ The system consists of several services that live in docker containers:
 These services use one or more Docker volumes:
 
 - `metacpan_cpan`: holds the CPAN archive, mounted in `/CPAN`
-- `metacpan_elasticsearch`: holds the ElasticSearch database files
-- `metacpan_elasticsearch_test`: holds the ElasticSearch test database files
+- `metacpan_elasticsearch`: holds the Elasticsearch database files
+- `metacpan_elasticsearch_test`: holds the Elasticsearch test database files
 - `metacpan_api_carton` and `metacpan_web_carton`: holds the dependencies
   installed by [Carton][4] for the `api` and `web` services, respectively;
   mounted on `/carton` instead of `local`, to prevent clashing with the host
@@ -324,7 +334,7 @@ The `web` service is a checkout of `metacpan-web`, built as a Docker image.
 Running this service alone is enough if you want to just hack on the frontend,
 since by default the service is configured to talk to
 [https://fastapi.metacpan.org](https://fastapi.metacpan.org) for its backend; if this is what you want, then you
-can simply invoke `docker-compose up`.
+can simply invoke `docker-compose up` or `docker-compose up web`.
 
 #### `api`
 
@@ -337,8 +347,7 @@ additional commands in a separate terminal once
 
 #### `grep`
 
-The `grep` service is a checkout of `metacpan-grep-front-end`, built as a Docker image.
-Note that this is using the `metacpan_git_shared` volume, which requires the git repo for
+The `grep` service is a checkout of `metacpan-grep-front-end`, built as a Docker image. Note that this is using the `metacpan_git_shared` volume, which requires the git repo for
 `metacpan-cpan-extracted` which can be initialized by running:
 
     ./bin/metacpan-docker init
@@ -378,7 +387,7 @@ instead will set it all up for you.
 
 The `elasticsearch` and `elasticsearch_test` services use the official
 [Elasticsearch Docker image][9], configured with settings and scripts taken from
-the [metacpan-puppet][10] repository. It is depended upon by the `api` service.
+the [metacpan-puppet][10] repository. The `api` service depends on the `elasticsearch` service and the `api_test` service depends on the `elasticsearch_test` services.
 
 [9]: https://store.docker.com/images/elasticsearch
 [10]: https://github.com/metacpan/metacpan-puppet

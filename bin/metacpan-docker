@@ -13,8 +13,8 @@ git_clone_and_setup_hooks() {
     local repo=$1
     (
         cd src
-        [ -d "$repo" ] || git clone https://github.com/metacpan/$repo.git
-        cd $repo
+        [ -d "$repo" ] || git clone "https://github.com/metacpan/$repo.git"
+        cd "$repo"
         [ -e git/hooks/pre-commit ] && chmod +x git/hooks/pre-commit
         cd .git/hooks
         ln -sf ../../git/hooks/pre-commit
@@ -26,7 +26,7 @@ init() {
     echo "Initializing metacpan-docker repositories:"
     mkdir -p src
     for repo in ${GitRepos[@]}; do
-        git_clone_and_setup_hooks $repo
+        git_clone_and_setup_hooks "$repo"
     done
 
     [ -e src/metacpan-cpan-extracted ] || ln -s metacpan-cpan-extracted-lite src/metacpan-cpan-extracted
@@ -43,7 +43,7 @@ init() {
 git_update_repo() {
     local repo=$1
     (
-        cd src/$repo
+        cd "src/$repo"
         git fetch origin
         git pull origin master
     )
@@ -54,7 +54,7 @@ git_reset_repo() {
     local repo=$1
     echo "Updating repository $repo"
     (
-        cd src/$repo
+        cd "src/$repo"
         git fetch origin
         git checkout master
         git pull origin master
@@ -69,7 +69,7 @@ update() {
     git pull origin master
 
     for repo in ${GitRepos[@]}; do
-        git_update_repo $repo
+        git_update_repo "$repo"
     done
 }
 
@@ -77,7 +77,7 @@ reset_repo() {
     echo "Resetting metacpan-docker repositories:"
 
     for repo in ${GitRepos[@]}; do
-        git_reset_repo $repo
+        git_reset_repo "$repo"
     done
 }
 
