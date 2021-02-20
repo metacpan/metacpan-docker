@@ -7,3 +7,4 @@
 ./bin/run bin/metacpan release /CPAN/authors/id/
 ./bin/run bin/metacpan latest
 ./bin/run bin/metacpan author
+./bin/run bin/metacpan permission
