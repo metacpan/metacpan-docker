@@ -16,8 +16,8 @@ services:
   #  \__/_/   \__,_/\___/_/ /_/_/|_|        /o____o_\
 
   traefik:
-    # The official v2.0 Traefik docker image
-    image: traefik:v2.0
+    # The official v2.4.5 Traefik docker image
+    image: traefik:v2.4.5
     networks:
       - traefik-network
     # Enables the web UI and tells Traefik to listen to docker
