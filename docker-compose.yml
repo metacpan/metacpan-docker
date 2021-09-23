@@ -396,7 +396,7 @@ services:
   #
 
   mongodb:
-    image: mongo:latest
+    image: mongo:4.4.9
     networks:
       - mongo
     healthcheck:
