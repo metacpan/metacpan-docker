@@ -36,9 +36,12 @@ jobs:
             ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test --
           name: wait for ES
       - run:
+          name: Run complete MetaCPAN API Test Suite
           command: |
             docker-compose exec -T api_test prove -lr --jobs 2 t
             docker-compose down
+          environment:
+            MOJO_MODE: testing
       - run:
           command: |
             docker-compose logs
