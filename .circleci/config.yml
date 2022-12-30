@@ -40,9 +40,8 @@ jobs:
           command: |
             docker-compose exec -T api_test prove -lr --jobs 2 t
             docker-compose down
-          environment:
-            MOJO_MODE: testing
       - run:
+          name: Show Docker container logs on Error
           command: |
             docker-compose logs
             docker stats --no-stream
