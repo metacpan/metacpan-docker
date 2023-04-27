@@ -46,7 +46,6 @@ jobs:
             docker-compose logs
             docker stats --no-stream
             docker ps -a | head
-          name: docker-compose logs
           when: on_fail
       - run:
           command: |
