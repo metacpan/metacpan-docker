@@ -197,7 +197,7 @@ You can access the dashboard configuration via:
 
 #### `web`
 
-The local instance of the web front end is accessiable via:
+The local instance of the web front end is accessible via:
 
 * [http://localhost:5001](http://localhost:5001)
 * [http://web.metacpan.localhost](http://web.metacpan.localhost)
@@ -313,7 +313,7 @@ This will stay on your current local branch.
 
 This is used to reset all the git repositories in `src/*` to their
 latest version on `upstream/master`.
-This will fail if you have some uncommited local changes.
+This will fail if you have some uncommitted local changes.
 You should then commit or cancel your changes before re-running the command.
 
 #### `bin/metacpan-docker` build/up/down/start/stop/run/ps/top...
