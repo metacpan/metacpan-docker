@@ -67,6 +67,19 @@ access docker follow the
 This document assumes the post-installation steps have been followed for the
 current user.
 
+You will also need Docker buildx, and to enable Docker BuildKit. They should
+be set up by default when using Docker Desktop, but on Linux you may need to
+install them. buildx is the `docker-buildx` package on Debian based systems.
+Docker BuildKit can be enabled by following the
+[Getting Started](https://docs.docker.com/build/buildkit/#getting-started)
+instructions.
+
+If you are running a Mac ARM64 system, you will need to manually tell docker
+to use the x86_64 version of Elasticsearch 2.4. This can be done by running
+the command:
+
+    docker pull elasticsearch:2.4 --platform=linux/x86_64
+
 It is highly recommended that you alias `docker-compose` to `fig` (its original
 name) and use it wherever `docker-compose` is used. You are going to have to
 type this command a lot.
