@@ -3,7 +3,7 @@
 
 set -e
 
-GitRepos=("metacpan-api" "metacpan-web" "metacpan-grep-front-end" "metacpan-cpan-extracted-lite")
+GitRepos=("metacpan-api" "metacpan-web" "metacpan-grep-front-end" "metacpan-cpan-extracted-lite" "metacpan-ingest")
 
 # sanity check
 type "docker" > /dev/null

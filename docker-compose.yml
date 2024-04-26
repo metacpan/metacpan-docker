@@ -198,6 +198,21 @@ services:
       - database
       - elasticsearch
 
+  ingest:
+    image: metacpan/metacpan-ingest:latest
+    volumes:
+      - type: volume
+        source: cpan
+        target: /CPAN
+      - type: bind
+        source: ./configs/metacpan-ingest/metacpan_ingest_local.conf
+        target: /metacpan-ingest/metacpan_ingest_local.conf
+        read_only: true
+    depends_on:
+      - elasticsearch
+    networks:
+      - elasticsearch
+
   #        _ _   _           _                           _
   #   __ _(_) |_| |__  _   _| |__    _ __ ___   ___  ___| |_ ___
   #  / _` | | __| '_ \| | | | '_ \  | '_ ` _ \ / _ \/ _ \ __/ __|
