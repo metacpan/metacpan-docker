@@ -9,35 +9,35 @@
 * [Running the MetaCPAN stack with Docker (via Docker Compose)](#running-the-metacpan-stack-with-docker-via-docker-compose)
 * [Quick Start](#quick-start)
 * [Working with Containers](#working-with-containers)
-    * [Building Containers](#building-containers)
-    * [Accessing Containers](#accessing-containers)
-    * [Accessing Services](#accessing-services)
-        * [`web`](#web)
-        * [`api`](#api)
-        * [`github-meets-cpan`](#github-meets-cpan)
-        * [`Elasticsearch`](#elasticsearch)
-        * [`grep`](#grep)
+  * [Building Containers](#building-containers)
+  * [Accessing Containers](#accessing-containers)
+  * [Accessing Services](#accessing-services)
+    * [`web`](#web)
+    * [`api`](#api)
+    * [`Elasticsearch`](#elasticsearch)
+    * [`PostgreSQL`](#postgresql)
+    * [`grep`](#grep)
 * [System architecture](#system-architecture)
-    * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
-        * [`bin/metacpan init`](#binmetacpan-init)
-        * [`bin/metacpan localapi`](#binmetacpan-localapi)
-        * [`bin/metacpan-docker pull`](#binmetacpan-docker-pull)
-        * [`bin/metacpan-docker reset`](#binmetacpan-docker-reset)
-        * [`bin/metacpan-docker` build/up/down/start/stop/run/ps/top...](#binmetacpan-docker-buildupdownstartstoprunpstop)
-    * [Services](#services)
-        * [`web`](#web-1)
-        * [`api`](#api-1)
-        * [`grep`](#grep-1)
-            * [Setting up a partial CPAN in the `api` service](#setting-up-a-partial-cpan-in-the-api-service)
-            * [Bootstrapping the `elasticsearch` indices](#bootstrapping-the-elasticsearch-indices)
-            * [Putting the above all together](#putting-the-above-all-together)
-        * [elasticsearch and elasticsearch_test](#elasticsearch-and-elasticsearch_test)
+  * [The `bin/metacpan-docker` script](#the-binmetacpan-docker-script)
+    * [`bin/metacpan init`](#binmetacpan-init)
+    * [`bin/metacpan localapi`](#binmetacpan-localapi)
+    * [`bin/metacpan-docker pull`](#binmetacpan-docker-pull)
+    * [`bin/metacpan-docker reset`](#binmetacpan-docker-reset)
+    * [`bin/metacpan-docker` build/up/down/start/stop/run/ps/top...](#binmetacpan-docker-buildupdownstartstoprunpstop)
+  * [Services](#services)
+    * [`web`](#web-1)
+    * [`api`](#api-1)
+    * [`grep`](#grep-1)
+      * [Setting up a partial CPAN in the `api` service](#setting-up-a-partial-cpan-in-the-api-service)
+      * [Bootstrapping the `elasticsearch` indices](#bootstrapping-the-elasticsearch-indices)
+      * [Putting the above all together](#putting-the-above-all-together)
+    * [elasticsearch and elasticsearch_test](#elasticsearch-and-elasticsearch_test)
 * [Tips and tricks](#tips-and-tricks)
-    * [Running your own miniCPAN inside metacpan-docker](#running-your-own-minicpan-inside-metacpan-docker)
-    * [Running tests](#running-tests)
-    * [Updating Carton dependencies](#updating-carton-dependencies)
-    * [Updating the git repositories](#updating-the-git-repositories)
-    * [Running Kibana to peek into Elasticsearch data](#running-kibana-to-peek-into-elasticsearch-data)
+  * [Running your own miniCPAN inside metacpan-docker](#running-your-own-minicpan-inside-metacpan-docker)
+  * [Running tests](#running-tests)
+  * [Updating Carton dependencies](#updating-carton-dependencies)
+  * [Updating the git repositories](#updating-the-git-repositories)
+  * [Running Kibana to peek into Elasticsearch data](#running-kibana-to-peek-into-elasticsearch-data)
 * [Peeking Inside the Container](#peeking-inside-the-container)
 * [To Do](#to-do)
 * [See also](#see-also)
@@ -173,11 +173,6 @@ To access the `psql` command line client in the PostgreSQL container:
 
     docker-compose exec pgdb psql
 
-Similarly the `mongodb` command line client in the MongoDB container is accessed
-via:
-
-    docker-compose exec mongodb mongo --host mongodb test
-
 ### Accessing Services
 
 Each container is responsible for a different service. Some of these services
@@ -188,7 +183,6 @@ The current configuration is:
 
 - api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
 - web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
-- github-meets-cpan: [http://gh.metacpan.localhost](http://gh.metacpan.localhost)
 - grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
 In order to access to the localhost subdomains, you probably have to manually
@@ -220,11 +214,6 @@ The local instance of the web front end is accessible via:
 * [http://localhost:5000](http://localhost:5000)
 * [http://api.metacpan.localhost](http://api.metacpan.localhost)
 
-#### `github-meets-cpan`
-
-* [http://localhost:3000](http://localhost:3000)
-* [http://gh.metacpan.localhost](http://gh.metacpan.localhost)
-
 #### `Elasticsearch`
 
 The `elasticsearch` and `elasticsearch_test` containers are not exposed directly. They are available via the `api` and `api_test` containers.
@@ -241,10 +230,9 @@ You can query the `elasticsearch_test` container via:
 docker-compose exec elasticsearch_test curl http://localhost:9200
 ```
 
-#### `PostgreSQL and MongoDB`
+#### `PostgreSQL`
 
-The PostgreSQL and MongoDB services by default are only accessible from other
-containers.
+The PostgreSQL service by default is only accessible from other containers.
 
 #### `grep`
 
@@ -266,7 +254,6 @@ The system consists of several services that live in docker containers:
 - `elasticsearch_test` — database for `api_test`
 - `pgdb` - PostgreSQL database container
 - `logspout` - Docker log interface to [honeycomb.io](https://honeycomb.io)
-- `github-meets-cpan` - Containerized version of [gh.metacpan.org](https://gh.metacpan.org)
 - `grep` - the web interface for grep.metacpan on [http://localhost:3001](http://localhost:3001)
 
 These services use one or more Docker volumes:
