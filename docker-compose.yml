@@ -213,93 +213,6 @@ services:
     networks:
       - elasticsearch
 
-  #        _ _   _           _                           _
-  #   __ _(_) |_| |__  _   _| |__    _ __ ___   ___  ___| |_ ___
-  #  / _` | | __| '_ \| | | | '_ \  | '_ ` _ \ / _ \/ _ \ __/ __|
-  # | (_| | | |_| | | | |_| | |_) | | | | | | |  __/  __/ |_\__ \
-  #  \__, |_|\__|_| |_|\__,_|_.__/  |_| |_| |_|\___|\___|\__|___/
-  #  |___/
-  #
-  #   ___ _ __   __ _ _ __
-  #  / __| '_ \ / _` | '_ \
-  # | (__| |_) | (_| | | | |
-  #  \___| .__/ \__,_|_| |_|
-  #      |_|
-  #
-  github-meets-cpan:
-    image: metacpan/github-meets-cpan:latest
-    command: "/wait-for-it.sh mongodb:27017 -- morbo script/app.pl"
-    depends_on:
-      - mongodb
-      - logspout
-      - traefik
-    networks:
-      - mongo
-      - traefik-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-network"
-      - "traefik.http.routers.github-meets-cpan.rule=Host(`gh.metacpan.localhost`)"
-      - "traefik.http.services.gh-meet-cpan-web.loadbalancer.server.port=3000"
-
-  #        _ _   _           _                           _
-  #   __ _(_) |_| |__  _   _| |__    _ __ ___   ___  ___| |_ ___
-  #  / _` | | __| '_ \| | | | '_ \  | '_ ` _ \ / _ \/ _ \ __/ __|
-  # | (_| | | |_| | | | |_| | |_) | | | | | | |  __/  __/ |_\__ \
-  #  \__, |_|\__|_| |_|\__,_|_.__/  |_| |_| |_|\___|\___|\__|___/
-  #  |___/
-  #
-  #   ___ _ __   __ _ _ __     ___ _ __ ___  _ __
-  #  / __| '_ \ / _` | '_ \   / __| '__/ _ \| '_ \
-  # | (__| |_) | (_| | | | | | (__| | | (_) | | | |
-  #  \___| .__/ \__,_|_| |_|  \___|_|  \___/|_| |_|
-  #      |_|
-  #
-
-  github-meets-cpan-cron:
-    image: metacpan/github-meets-cpan:latest
-    command: "/wait-for-it.sh mongodb:27017 -- perl cron/update.pl"
-    depends_on:
-      - mongodb
-    volumes:
-      - type: bind
-        source: ${MC_CONF_PRIVATE_DIR:-.}/github-meets-cpan/environment.json
-        target: /code/environment.json
-        read_only: true
-    networks:
-      - mongo
-
-  #   __ _ _ __ ___ _ __
-  #  / _` | '__/ _ \ '_ \
-  # | (_| | | |  __/ |_) |
-  #  \__, |_|  \___| .__/
-  #   __/ |        | |
-  #  |___/         |_|
-
-  grep:
-    depends_on:
-      - traefik
-    image: metacpan/metacpan-grep-front-end:latest
-    build:
-      context: ./src/metacpan-grep-front-end
-    volumes:
-      - type: volume
-        source: metacpan_git_shared
-        target: /shared/metacpan_git
-        read_only: true
-      - type: bind
-        source: ./src/metacpan-grep-front-end
-        target: /metacpan-grep-front-end
-        read_only: true
-    env_file:
-      - grep.env
-    networks:
-      - traefik-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grep.rule=Host(`grep.metacpan.localhost`)"
-      - "traefik.http.services.grep-web.loadbalancer.server.port=3000"
-
   #  ____    _  _____  _    ____    _    ____  _____ ____
   # |  _ \  / \|_   _|/ \  | __ )  / \  / ___|| ____/ ___|
   # | | | |/ _ \ | | / _ \ |  _ \ / _ \ \___ \|  _| \___ \
@@ -404,25 +317,6 @@ services:
         target: /healthcheck.sh
         read_only: true
 
-  #                                        _ _
-  #  _ __ ___   ___  _ __   __ _  ___   __| | |__
-  # | '_ ` _ \ / _ \| '_ \ / _` |/ _ \ / _` | '_ \
-  # | | | | | | (_) | | | | (_| | (_) | (_| | |_) |
-  # |_| |_| |_|\___/|_| |_|\__, |\___/ \__,_|_.__/
-  #                        |___/
-  #
-
-  mongodb:
-    image: mongo:4.4.9
-    networks:
-      - mongo
-    healthcheck:
-      interval: 10s
-      timeout: 10s
-      retries: 0
-      start_period: 40s
-      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
-
 #  _   _ _____ _______        _____  ____  _  ______
 # | \ | | ____|_   _\ \      / / _ \|  _ \| |/ / ___|
 # |  \| |  _|   | |  \ \ /\ / / | | | |_) | ' /\___ \
@@ -433,7 +327,6 @@ services:
 networks:
   database:
   elasticsearch:
-  mongo:
   traefik-network:
   web-network:
 

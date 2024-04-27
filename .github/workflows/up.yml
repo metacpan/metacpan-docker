@@ -28,16 +28,6 @@ jobs:
       - name: down
         run: docker-compose down
 
-      - name: up github-meets-cpan
-        run: docker-compose up -d github-meets-cpan
-      - name: down
-        run: docker-compose down
-
-      - name: up github-meets-cpan-cron
-        run: docker-compose up -d github-meets-cpan-cron
-      - name: down
-        run: docker-compose down
-
       - name: up web
         run: docker-compose up -d web
       - name: down
