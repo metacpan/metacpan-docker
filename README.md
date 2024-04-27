@@ -92,10 +92,10 @@ Then, clone this repo and set up the environment:
 
 The `bin/metacpan-docker init` command clones the source repositories for:
 
-- `metacpan-web`
-- `metacpan-api`
-- `metacpan-grep-front-end`
-- `metacpan-cpan-extracted-lite`
+* `metacpan-web`
+* `metacpan-api`
+* `metacpan-grep-front-end`
+* `metacpan-cpan-extracted-lite`
 
 These repositories are automatically mounted into the appropriate docker
 containers allowing the developer to use their preferred tools to work with the
@@ -118,8 +118,8 @@ following command in a separate terminal to get yourself up to speed:
     docker-compose exec api index-cpan.sh
 
 This will prompt you to confirm removing old indices and setting up mappings on
-the Elasticsearch service (say `YES`).  It will then proceed to rsync a partial CPAN in
-`/CPAN` for its metadata to be imported.
+the Elasticsearch service (say `YES`).  It will then proceed to rsync a partial
+CPAN in `/CPAN` for its metadata to be imported.
 
 Once the above is done, you should be able to see your local partial CPAN data
 in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
@@ -150,9 +150,7 @@ For further details, read on!
 You can (re)build arbitrary containers.  For instance, if you want to rebuild
 the `api` container:
 
-```
-docker-compose build api
-```
+    docker-compose build api
 
 ### Accessing Containers
 
@@ -181,21 +179,19 @@ are available in the developer environment via ports on the host system.
 We are using [traefik][13] to manage the traffic between services.
 The current configuration is:
 
-- api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
-- web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
-- grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
+* api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
+* web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
+* grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
 
 In order to access to the localhost subdomains, you probably have to manually
 add these entries in you `/etc/hosts` file.
 
-```
-# add to /etc/hosts
-127.0.0.1   api.metacpan.localhost
-127.0.0.1   gh.metacpan.localhost
-127.0.0.1   grep.metacpan.localhost
-127.0.0.1   metacpan.localhost
-127.0.0.1   web.metacpan.localhost
-```
+    # add to /etc/hosts
+    127.0.0.1   api.metacpan.localhost
+    127.0.0.1   gh.metacpan.localhost
+    127.0.0.1   grep.metacpan.localhost
+    127.0.0.1   metacpan.localhost
+    127.0.0.1   web.metacpan.localhost
 
 You can access the dashboard configuration via:
 [http://metacpan.localhost:8080](http://metacpan.localhost:8080)
@@ -216,19 +212,16 @@ The local instance of the web front end is accessible via:
 
 #### `Elasticsearch`
 
-The `elasticsearch` and `elasticsearch_test` containers are not exposed directly. They are available via the `api` and `api_test` containers.
+The `elasticsearch` and `elasticsearch_test` containers are not exposed
+directly. They are available via the `api` and `api_test` containers.
 
 You can query the `elasticsearch` container via:
 
-```
-docker-compose exec elasticsearch curl http://localhost:9200
-```
+    docker-compose exec elasticsearch curl http://localhost:9200
 
 You can query the `elasticsearch_test` container via:
 
-```
-docker-compose exec elasticsearch_test curl http://localhost:9200
-```
+    docker-compose exec elasticsearch_test curl http://localhost:9200
 
 #### `PostgreSQL`
 
@@ -247,25 +240,25 @@ Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 
 The system consists of several services that live in docker containers:
 
-- `web` — the web interface on [http://localhost:5001](http://localhost:5001)
-- `api` — the main server on [http://localhost:5000](http://localhost:5000)
-- `api_test` — the api server for running tests via `prove`
-- `elasticsearch` — database for `api`
-- `elasticsearch_test` — database for `api_test`
-- `pgdb` - PostgreSQL database container
-- `logspout` - Docker log interface to [honeycomb.io](https://honeycomb.io)
-- `grep` - the web interface for grep.metacpan on [http://localhost:3001](http://localhost:3001)
+* `web` — the web interface on [http://localhost:5001](http://localhost:5001)
+* `api` — the main server on [http://localhost:5000](http://localhost:5000)
+* `api_test` — the api server for running tests via `prove`
+* `elasticsearch` — database for `api`
+* `elasticsearch_test` — database for `api_test`
+* `pgdb` - PostgreSQL database container
+* `logspout` - Docker log interface to [honeycomb.io](https://honeycomb.io)
+* `grep` - the web interface for grep.metacpan on [http://localhost:3001](http://localhost:3001)
 
 These services use one or more Docker volumes:
 
-- `metacpan_cpan`: holds the CPAN archive, mounted in `/CPAN`
-- `metacpan_elasticsearch`: holds the Elasticsearch database files
-- `metacpan_elasticsearch_test`: holds the Elasticsearch test database files
-- `metacpan_api_carton` and `metacpan_web_carton`: holds the dependencies
+* `metacpan_cpan`: holds the CPAN archive, mounted in `/CPAN`
+* `metacpan_elasticsearch`: holds the Elasticsearch database files
+* `metacpan_elasticsearch_test`: holds the Elasticsearch test database files
+* `metacpan_api_carton` and `metacpan_web_carton`: holds the dependencies
   installed by [Carton][4] for the `api` and `web` services, respectively;
   mounted on `/carton` instead of `local`, to prevent clashing with the host
   user's Carton
-- `metacpan_git_shared`: points to the git repo containing all extracted CPAN
+* `metacpan_git_shared`: points to the git repo containing all extracted CPAN
   versions. This is mounted in `/shared/metacpan_git`.
   This can be either `metacpan-cpan-extracted` or `metacpan-cpan-extracted-lite`.
   The volume is bound to the local repo at `${PWD}/src/metacpan-cpan-extracted`.
@@ -472,7 +465,7 @@ configuring e.g. a `kibana` service.
 
 If you run `docker ps` you'll see the containers. You might see something like:
 
-```
+```bash
 $ docker ps
 CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS                          PORTS                              NAMES
 2efb9c475c83        metacpan-web:latest   "carton exec plackup…"   12 hours ago        Up 12 hours                     0.0.0.0:5001->5001/tcp             metacpan_web_1
