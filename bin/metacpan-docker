@@ -16,6 +16,7 @@ git_clone_and_setup_hooks() {
         [ -d "$repo" ] || git clone "https://github.com/metacpan/$repo.git"
         cd "$repo"
         [ -e git/hooks/pre-commit ] && chmod +x git/hooks/pre-commit
+        [ -d .git/hooks ] || mkdir .git/hooks
         cd .git/hooks
         ln -sf ../../git/hooks/pre-commit
     )
