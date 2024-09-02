@@ -81,30 +81,28 @@ reset_repo() {
     done
 }
 
-
 case "x$1" in
-    'xinit')
-        init
-        exit
-        ;;
-    'xreset')
-        reset_repo
-        exit
-        ;;
-    'xpull')
-        update
-        exit
-        ;;
-    'xlocalapi')
-        shift
-        ;;
-    'x')
-        init
-        update
-        exit
-        ;;
-    *)
-        ;;
+'xinit')
+    init
+    exit
+    ;;
+'xreset')
+    reset_repo
+    exit
+    ;;
+'xpull')
+    update
+    exit
+    ;;
+'xlocalapi')
+    shift
+    ;;
+'x')
+    init
+    update
+    exit
+    ;;
+*) ;;
 esac
 
 exec docker compose "$@"
