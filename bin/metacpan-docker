@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# metacpan-docker: simple wrapper for docker-compose running MetaCPAN
+# metacpan-docker: simple wrapper for docker compose running MetaCPAN
 
 set -e
 
@@ -7,7 +7,6 @@ GitRepos=("metacpan-api" "metacpan-web" "metacpan-grep-front-end" "metacpan-cpan
 
 # sanity check
 type "docker" > /dev/null
-type "docker-compose" > /dev/null
 
 git_clone_and_setup_hooks() {
     local repo=$1
@@ -82,30 +81,28 @@ reset_repo() {
     done
 }
 
-
 case "x$1" in
-    'xinit')
-        init
-        exit
-        ;;
-    'xreset')
-        reset_repo
-        exit
-        ;;
-    'xpull')
-        update
-        exit
-        ;;
-    'xlocalapi')
-        shift
-        ;;
-    'x')
-        init
-        update
-        exit
-        ;;
-    *)
-        ;;
+'xinit')
+    init
+    exit
+    ;;
+'xreset')
+    reset_repo
+    exit
+    ;;
+'xpull')
+    update
+    exit
+    ;;
+'xlocalapi')
+    shift
+    ;;
+'x')
+    init
+    update
+    exit
+    ;;
+*) ;;
 esac
 
-exec docker-compose "$@"
+exec docker compose "$@"
