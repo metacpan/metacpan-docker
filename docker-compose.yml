@@ -193,7 +193,7 @@ services:
     profiles:
       - dev
       - ingest
-    image: elasticsearch:2.4
+    image: elasticsearch:5.6.16
     volumes:
       - type: volume
         source: elasticsearch
@@ -223,7 +223,7 @@ services:
   elasticsearch_test:
     profiles:
       - test
-    image: elasticsearch:2.4
+    image: elasticsearch:5.6.16
     volumes:
       - type: volume
         source: elasticsearch_test
