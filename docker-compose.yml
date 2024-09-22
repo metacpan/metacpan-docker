@@ -75,10 +75,6 @@ services:
         source: ./src/metacpan-web
         target: /metacpan-web
         # read_only: true
-      - type: bind
-        source: ./configs/metacpan-web/metacpan_web_local.conf
-        target: /metacpan-web/metacpan_web_local.conf
-        read_only: true
     ports:
       - "5001:5001"
     networks:
@@ -122,18 +118,6 @@ services:
         source: ./src/metacpan-api
         target: /metacpan-api
       - type: bind
-        source: ./configs/metacpan-api/metacpan_server.conf
-        target: /metacpan-api/metacpan_server.conf
-        read_only: true
-      - type: bind
-        source: ./configs/metacpan-api/metacpan_server_testing.conf
-        target: /metacpan-api/metacpan_server_testing.conf
-        read_only: true
-      - type: bind
-        source: ./configs/metacpan-api/metacpan.pl
-        target: /metacpan-api/etc/metacpan.pl
-        read_only: true
-      - type: bind
         source: ./bin/index-cpan.sh
         target: /bin/index-cpan.sh
         read_only: true
@@ -174,18 +158,6 @@ services:
       - type: bind
         source: ./src/metacpan-api
         target: /metacpan-api
-      - type: bind
-        source: ./configs/metacpan-api/metacpan_server.conf
-        target: /metacpan-api/metacpan_server.conf
-        read_only: true
-      - type: bind
-        source: ./configs/metacpan-api/metacpan_server_testing.conf
-        target: /metacpan-api/metacpan_server_testing.conf
-        read_only: true
-      - type: bind
-        source: ./configs/metacpan-api/metacpan.pl
-        target: /metacpan-api/etc/metacpan.pl
-        read_only: true
       - type: bind
         source: ./bin/index-cpan.sh
         target: /bin/index-cpan.sh
