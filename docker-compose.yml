@@ -1,5 +1,6 @@
 ---
-
+x-project:
+  name: metacpan
 #  ____  _____ ______     _____ ____ _____ ____
 # / ___|| ____|  _ \ \   / /_ _/ ___| ____/ ___|
 # \___ \|  _| | |_) \ \ / / | | |   |  _| \___ \
@@ -100,16 +101,18 @@ services:
   api:
     depends_on:
       - elasticsearch
-      - pgdb
+      - pghost
       - traefik
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
+    # put variables for compose inside a .env file
+    # use env_file for variables to be set inside the container
     env_file:
-      - localapi.env
+      - .env
     command: >
       /metacpan-api/wait-for-es.sh http://elasticsearch:9200 "" --
-      /metacpan-api/wait-for-it.sh -t 15 -s ${PGDB} --
+      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -154,7 +157,7 @@ services:
   api_test:
     depends_on:
       - elasticsearch_test
-      - pgdb
+      - pghost
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -162,7 +165,7 @@ services:
       - localapi_test.env
     command: >
       /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 "" --
-      /metacpan-api/wait-for-it.sh -t 15 -s ${PGDB} --
+      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -315,8 +318,8 @@ services:
   # |_|                 |___/                  |_|
   #
 
-  pgdb:
-    hostname: pgdb
+  pghost:
+    hostname: pghost
     image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
     build:
       context: "./pg"
@@ -324,7 +327,7 @@ services:
         PG_TAG: "${PG_VERSION_TAG:-9.6-alpine}"
     environment:
       POSTGRES_PASSWORD: metacpan
-      POSTGRES_USERNAME: metacpan123
+      POSTGRES_USER: metacpan123
       POSTGRES_DB: metacpan
     networks:
       - database
@@ -336,7 +339,7 @@ services:
       test: ["CMD", "/healthcheck.sh"]
     volumes:
       - type: volume
-        source: pgdb-data
+        source: pghost-data
         target: /var/lib/postgresql/data
       - type: bind
         source: ./pg/docker-entrypoint-initdb.d
@@ -373,6 +376,6 @@ volumes:
   cpan:
   elasticsearch:
   elasticsearch_test:
-  pgdb-data:
+  pghost-data:
   metacpan_git_shared:
     external: true
