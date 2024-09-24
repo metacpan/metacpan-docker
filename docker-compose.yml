@@ -9,32 +9,6 @@ x-project:
 #
 
 services:
-  #     __                  _____ __
-  #    / /__________ ____  / __(_) /__
-  #   / __/ ___/ __ `/ _ \/ /_/ / //_/         __
-  #  / /_/ /  / /_/ /  __/ __/ / ,<          _| =\__
-  #  \__/_/   \__,_/\___/_/ /_/_/|_|        /o____o_\
-
-  traefik:
-    # The official v2.4.5 Traefik docker image
-    image: traefik:v2.4.5
-    networks:
-      - traefik-network
-    # Enables the web UI and tells Traefik to listen to docker
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker"
-      # Do not expose containers unless explicitly told so
-      - "--providers.docker.exposedbydefault=false"
-    ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
-
   #  _                                   _
   # | | ___   __ _ ___ _ __   ___  _   _| |_
   # | |/ _ \ / _` / __| '_ \ / _ \| | | | __|
@@ -62,8 +36,6 @@ services:
   #
 
   web:
-    depends_on:
-      - traefik
     image: metacpan/metacpan-web:latest
     build:
       context: ./src/metacpan-web
@@ -79,12 +51,6 @@ services:
       - "5001:5001"
     networks:
       - web-network
-      - traefik-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-network"
-      - "traefik.http.routers.web.rule=Host(`web.metacpan.localhost`)"
-      - "traefik.http.services.web.loadbalancer.server.port=5001"
 
   #              _
   #   __ _ _ __ (_)
@@ -98,7 +64,6 @@ services:
     depends_on:
       - elasticsearch
       - pghost
-      - traefik
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -130,13 +95,7 @@ services:
     networks:
       - database
       - elasticsearch
-      - traefik-network
       - web-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik-network"
-      - "traefik.http.routers.api.rule=Host(`api.metacpan.localhost`)"
-      - "traefik.http.services.api.loadbalancer.server.port=5000"
 
   api_test:
     depends_on:
@@ -195,8 +154,6 @@ services:
   #  |___/         |_|
 
   grep:
-    depends_on:
-      - traefik
     image: metacpan/metacpan-grep-front-end:latest
     build:
       context: ./src/metacpan-grep-front-end
@@ -211,12 +168,6 @@ services:
         read_only: true
     env_file:
       - grep.env
-    networks:
-      - traefik-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grep.rule=Host(`grep.metacpan.localhost`)"
-      - "traefik.http.services.grep-web.loadbalancer.server.port=3000"
 
   #  ____    _  _____  _    ____    _    ____  _____ ____
   # |  _ \  / \|_   _|/ \  | __ )  / \  / ___|| ____/ ___|
@@ -332,7 +283,6 @@ services:
 networks:
   database:
   elasticsearch:
-  traefik-network:
   web-network:
 
 # __     _____  _    _   _ __  __ _____ ____
