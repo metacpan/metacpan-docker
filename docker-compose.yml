@@ -51,6 +51,8 @@ services:
       - "5001:80"
     networks:
       - web-network
+    environment:
+      - PLACK_ENV=development
 
   #              _
   #   __ _ _ __ (_)
