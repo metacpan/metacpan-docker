@@ -48,7 +48,7 @@ services:
         target: /metacpan-web
         # read_only: true
     ports:
-      - "5001:5001"
+      - "5001:80"
     networks:
       - web-network
 
