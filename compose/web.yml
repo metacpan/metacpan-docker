@@ -1,0 +1,6 @@
+services:
+  web-server:
+    ports:
+      - "5001:80"
+    networks:
+      - web-network
