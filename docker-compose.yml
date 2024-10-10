@@ -8,6 +8,11 @@ x-project:
 # |____/|_____|_| \_\ \_/  |___\____|_____|____/
 #
 
+include:
+  - path:
+    - src/metacpan-web/docker-compose.yml
+    - compose/web.yml
+
 services:
   #  _                                   _
   # | | ___   __ _ ___ _ __   ___  _   _| |_
@@ -27,32 +32,6 @@ services:
       - logging.env
     ports:
       - "8100:80"
-
-  #               _
-  # __      _____| |__
-  # \ \ /\ / / _ \ '_ \
-  #  \ V  V /  __/ |_) |
-  #   \_/\_/ \___|_.__/
-  #
-
-  web:
-    image: metacpan/metacpan-web:latest
-    build:
-      context: ./src/metacpan-web
-    volumes:
-      - type: volume
-        source: web_carton
-        target: /carton
-      - type: bind
-        source: ./src/metacpan-web
-        target: /metacpan-web
-        # read_only: true
-    ports:
-      - "5001:80"
-    networks:
-      - web-network
-    environment:
-      - PLACK_ENV=development
 
   #              _
   #   __ _ _ __ (_)
@@ -295,7 +274,6 @@ networks:
 #
 
 volumes:
-  web_carton:
   api_carton:
   cpan:
   elasticsearch:
