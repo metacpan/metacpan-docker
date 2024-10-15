@@ -10,8 +10,8 @@ x-project:
 
 include:
   - path:
-    - src/metacpan-web/docker-compose.yml
-    - compose/web.yml
+      - src/metacpan-web/docker-compose.yml
+      - compose/web.yml
 
 services:
   #              _
