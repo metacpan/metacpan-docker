@@ -1,4 +1,6 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+---
+# Use the latest 2.1 version of CircleCI pipeline process engine. See:
+# https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 # Orchestrate or schedule a set of jobs
 workflows:
@@ -8,17 +10,8 @@ workflows:
 jobs:
   build-and-test:
     machine: true
-    resource_class: medium
+    resource_class: large
     steps:
-      # CircleCI has its own docker-compose already installed, but as of this writing, their version is too old to understand our docker-compose.yml
-      - run:
-          name: Install Docker Compose
-          command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` > /home/circleci/bin/docker-compose
-            sudo chmod +x /home/circleci/bin/docker-compose
-            which docker-compose
-            docker-compose --version
       - checkout
       - run:
           command: |
@@ -26,7 +19,7 @@ jobs:
           name: clone missing repositories
       - run:
           command: |
-            docker-compose --verbose up -d api_test
+            docker-compose --verbose --profile test up -d
           name: compose up
       # Since we're running docker-compose -d, we don't actually know if
       # Elasticsearch is available at the time this build step begins. We
@@ -38,12 +31,12 @@ jobs:
       - run:
           name: Run complete MetaCPAN API Test Suite
           command: |
-            docker-compose exec -T api_test prove -lr --jobs 2 t
-            docker-compose down
+            docker-compose --profile test exec -T api_test prove -lr --jobs 4 t
+            docker-compose --profile test down
       - run:
           name: Show Docker container logs on Error
           command: |
-            docker-compose logs
+            docker-compose --profile test logs
             docker stats --no-stream
             docker ps -a | head
           when: on_fail

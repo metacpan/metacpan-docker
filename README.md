@@ -101,11 +101,12 @@ These repositories are automatically mounted into the appropriate docker
 containers allowing the developer to use their preferred tools to work with the
 source code.
 
-The `docker compose up` command on its own will bring up the entire stack in the
-foreground (logs will be displayed).
+The `docker compose --profile dev up` command on its own will bring up the
+entire stack in the foreground (logs will be displayed).
 
-The `docker compose up` command will also fetch the official container images
-from [MetaCPAN Docker Hub](https://cloud.docker.com/u/metacpan/repository/list)
+The `docker compose --profile dev up` command will also fetch the official
+container images from
+[MetaCPAN Docker Hub](https://cloud.docker.com/u/metacpan/repository/list)
 repositories.
 
 This will build the Docker containers for MetaCPAN, PostgreSQL and Elasticsearch
@@ -128,7 +129,7 @@ elsewhere.
 Alternatively, if you just want to hack on the web frontend, you can run this
 instead of all the above:
 
-    docker compose up web
+    docker compose up web-server
 
 From here, you can proceed and hack on the MetaCPAN code at `src/metacpan-api`
 and/or `src/metacpan-web` directories, and saving edits will reload the
@@ -137,7 +138,7 @@ corresponding apps automatically!
 When done hacking (or, more likely, when you need to rebuild/refresh your Docker
 environment) you can then run
 
-    docker compose down
+    docker compose --profile dev down
 
 in another terminal to stop all MetaCPAN services and remove the containers.
 
