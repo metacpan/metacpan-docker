@@ -10,29 +10,10 @@ x-project:
 
 include:
   - path:
-    - src/metacpan-web/docker-compose.yml
-    - compose/web.yml
+      - src/metacpan-web/docker-compose.yml
+      - compose/web.yml
 
 services:
-  #  _                                   _
-  # | | ___   __ _ ___ _ __   ___  _   _| |_
-  # | |/ _ \ / _` / __| '_ \ / _ \| | | | __|
-  # | | (_) | (_| \__ \ |_) | (_) | |_| | |_
-  # |_|\___/ \__, |___/ .__/ \___/ \__,_|\__|
-  #          |___/    |_|
-  #
-
-  logspout:
-    image: honeycombio/logspout-honeycomb:1.13
-    volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-    env_file:
-      - logging.env
-    ports:
-      - "8100:80"
-
   #              _
   #   __ _ _ __ (_)
   #  / _` | '_ \| |

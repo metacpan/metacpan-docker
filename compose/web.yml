@@ -1,3 +1,4 @@
+---
 services:
   web-server:
     image: metacpan/metacpan-web:latest
