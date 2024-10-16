@@ -23,6 +23,8 @@ services:
   #
 
   api:
+    profiles:
+      - dev
     depends_on:
       - elasticsearch
       - pghost
@@ -34,8 +36,8 @@ services:
     env_file:
       - .env
     command: >
-      /metacpan-api/wait-for-es.sh http://elasticsearch:9200 "" --
       /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
+      /metacpan-api/wait-for-es.sh http://elasticsearch:9200 "" --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -60,6 +62,8 @@ services:
       - web-network
 
   api_test:
+    profiles:
+      - test
     depends_on:
       - elasticsearch_test
       - pghost
@@ -69,8 +73,8 @@ services:
     env_file:
       - localapi_test.env
     command: >
-      /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 "" --
       /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
+      /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 "" --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -94,6 +98,9 @@ services:
       - elasticsearch
 
   ingest:
+    profiles:
+      - dev
+      - ingest
     image: metacpan/metacpan-ingest:latest
     volumes:
       - type: volume
@@ -116,6 +123,8 @@ services:
   #  |___/         |_|
 
   grep:
+    profiles:
+      - grep
     image: metacpan/metacpan-grep-front-end:latest
     build:
       context: ./src/metacpan-grep-front-end
@@ -146,6 +155,9 @@ services:
   #
 
   elasticsearch:
+    profiles:
+      - dev
+      - ingest
     image: elasticsearch:2.4
     volumes:
       - type: volume
@@ -178,6 +190,8 @@ services:
   #
 
   elasticsearch_test:
+    profiles:
+      - test
     image: elasticsearch:2.4
     volumes:
       - type: volume
@@ -204,6 +218,9 @@ services:
   #
 
   pghost:
+    profiles:
+      - dev
+      - test
     hostname: pghost
     image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
     build:
