@@ -16,3 +16,4 @@ $RSYNC $PATH/authors/0*                 $MINICPAN/
 $RSYNC $PATH/modules/0*                 $MINICPAN/
 
 $RSYNC $PATH/indices/mirrors.json       $MINICPAN/
+$RSYNC $PATH/indices/find-ls.gz         $MINICPAN/
