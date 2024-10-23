@@ -22,6 +22,41 @@ services:
   #       |_|
   #
 
+  cloud_api:
+    profiles:
+      - cloud-es
+    depends_on:
+      - pghost
+    image: metacpan/metacpan-api:latest
+    build:
+      context: ./src/metacpan-api
+    # put variables for compose inside a .env file
+    # use env_file for variables to be set inside the container
+    env_file:
+      - .env
+    command: >
+      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
+      ${API_SERVER} ./bin/api.pl
+    volumes:
+      - type: volume
+        source: cpan
+        target: /CPAN
+      - type: bind
+        source: ./src/metacpan-api
+        target: /metacpan-api
+      - type: bind
+        source: ./bin/index-cpan.sh
+        target: /bin/index-cpan.sh
+        read_only: true
+      - type: bind
+        source: ./bin/partial-cpan-mirror.sh
+        target: /bin/partial-cpan-mirror.sh
+        read_only: true
+    ports:
+      - "5000:5000"
+    networks:
+      - database
+      - web-network
   api:
     profiles:
       - dev
@@ -219,6 +254,7 @@ services:
 
   pghost:
     profiles:
+      - cloud-es
       - dev
       - test
     hostname: pghost
