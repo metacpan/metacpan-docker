@@ -1,7 +1,6 @@
 ---
 services:
   web-server:
-    image: metacpan/metacpan-web:latest
     ports:
       - "5001:80"
     networks:
