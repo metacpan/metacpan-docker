@@ -202,10 +202,6 @@ services:
         source: ./elasticsearch/metacpan.yml
         target: /usr/share/elasticsearch/config/metacpan.yml
         read_only: true
-      - type: bind
-        source: ./elasticsearch/scripts
-        target: /usr/share/elasticsearch/config/scripts
-        read_only: true
     ports:
       - "9200"
     networks:
@@ -235,10 +231,6 @@ services:
       - type: bind
         source: ./elasticsearch/test.yml
         target: /usr/share/elasticsearch/config/test.yml
-        read_only: true
-      - type: bind
-        source: ./elasticsearch/scripts
-        target: /usr/share/elasticsearch/config/scripts
         read_only: true
     ports:
       - "9200"
