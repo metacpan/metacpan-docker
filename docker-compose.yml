@@ -194,14 +194,12 @@ services:
       - dev
       - ingest
     image: elasticsearch:2.4
+    environment:
+      - discovery.type=single-node
     volumes:
       - type: volume
         source: elasticsearch
         target: /usr/share/elasticsearch/data
-      - type: bind
-        source: ./elasticsearch/metacpan.yml
-        target: /usr/share/elasticsearch/config/metacpan.yml
-        read_only: true
     ports:
       - "9200"
     networks:
@@ -224,14 +222,12 @@ services:
     profiles:
       - test
     image: elasticsearch:2.4
+    environment:
+      - discovery.type=single-node
     volumes:
       - type: volume
         source: elasticsearch_test
         target: /usr/share/elasticsearch/data
-      - type: bind
-        source: ./elasticsearch/test.yml
-        target: /usr/share/elasticsearch/config/test.yml
-        read_only: true
     ports:
       - "9200"
     networks:
