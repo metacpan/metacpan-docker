@@ -26,7 +26,8 @@ services:
     profiles:
       - cloud-es
     depends_on:
-      - pghost
+      pghost:
+        condition: service_healthy
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -35,7 +36,6 @@ services:
     env_file:
       - .env
     command: >
-      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -57,12 +57,15 @@ services:
     networks:
       - database
       - web-network
+
   api:
     profiles:
       - dev
     depends_on:
-      - elasticsearch
-      - pghost
+      elasticsearch:
+        condition: service_healthy
+      pghost:
+        condition: service_healthy
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
@@ -71,8 +74,6 @@ services:
     env_file:
       - .env
     command: >
-      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
-      /metacpan-api/wait-for-es.sh http://elasticsearch:9200 "" --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -100,16 +101,16 @@ services:
     profiles:
       - test
     depends_on:
-      - elasticsearch_test
-      - pghost
+      elasticsearch_test:
+        condition: service_healthy
+      pghost:
+        condition: service_healthy
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
     env_file:
       - localapi_test.env
     command: >
-      /metacpan-api/wait-for-it.sh -t 15 -s -h ${PG_HOST} -p ${PG_PORT} --
-      /metacpan-api/wait-for-es.sh http://elasticsearch_test:9200 "" --
       ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
@@ -200,6 +201,10 @@ services:
       - type: volume
         source: elasticsearch
         target: /usr/share/elasticsearch/data
+    healthcheck:
+      timeout: 5s
+      start_period: 60s
+      test: ["CMD", "curl", "--fail", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
     ports:
       - "9200"
     networks:
@@ -228,6 +233,10 @@ services:
       - type: volume
         source: elasticsearch_test
         target: /usr/share/elasticsearch/data
+    healthcheck:
+      timeout: 5s
+      start_period: 60s
+      test: ["CMD", "curl", "--fail", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
     ports:
       - "9200"
     networks:
