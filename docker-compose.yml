@@ -99,6 +99,7 @@ services:
   api_test:
     profiles:
       - test
+      - ingest-test
     depends_on:
       - elasticsearch_test
       - pghost
@@ -147,6 +148,25 @@ services:
         read_only: true
     depends_on:
       - elasticsearch
+    networks:
+      - elasticsearch
+
+  ingest-test:
+    profiles:
+      - ingest-test
+    image: metacpan/metacpan-ingest:latest
+    environment:
+      PLACK_ENV: development
+    volumes:
+      - type: volume
+        source: cpan
+        target: /CPAN
+      - type: bind
+        source: ./configs/metacpan-ingest/metacpan_ingest_local.conf
+        target: /metacpan-ingest/metacpan_ingest_local.conf
+        read_only: true
+    depends_on:
+      - elasticsearch_test
     networks:
       - elasticsearch
 
@@ -223,6 +243,7 @@ services:
   elasticsearch_test:
     profiles:
       - test
+      - ingest-test
     image: elasticsearch:2.4
     volumes:
       - type: volume
@@ -249,6 +270,7 @@ services:
       - cloud-es
       - dev
       - test
+      - ingest-test
     hostname: pghost
     image: "postgres:${PG_VERSION_TAG:-9.6-alpine}"
     build:
