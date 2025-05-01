@@ -62,7 +62,7 @@ on either of these environments.
 
 On Debian / Ubuntu, install using:
 
-   apt install docker-compose-v2
+    apt install docker-compose-v2
 
 On Linux, Docker's default implementation only allows `root` user access to
 Docker commands and to control containers. In order to allow a regular user to
@@ -80,7 +80,7 @@ instructions.
 
 On Debian / Ubuntu, install using:
 
-   apt install buildx
+    apt install docker-buildx
 
 If you are running a Mac ARM64 system, you will need to manually tell docker to
 use the x86_64 version of Elasticsearch 2.4. This can be done by running the
