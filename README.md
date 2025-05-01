@@ -51,7 +51,7 @@ of things to be done better. Please use it and create Issues with your problems.
 
 ## Quick Start
 
-Install [Docker][0] and [Docker Compose][1] for your platform. [Docker for
+Install [Docker][0] and [Docker Compose][1] (v2+) for your platform. [Docker for
 Mac][2] or [Docker for Windows][3] will install both tools for you, if you are
 on either of these environments.
 
@@ -59,6 +59,10 @@ on either of these environments.
 [1]: https://docs.docker.com/compose/install
 [2]: https://docs.docker.com/docker-for-mac/
 [3]: https://docs.docker.com/docker-for-windows/
+
+On Debian / Ubuntu, install using:
+
+   apt install docker-compose-v2
 
 On Linux, Docker's default implementation only allows `root` user access to
 Docker commands and to control containers. In order to allow a regular user to
@@ -73,6 +77,10 @@ install them. buildx is the `docker-buildx` package on Debian based systems.
 Docker BuildKit can be enabled by following the
 [Getting Started](https://docs.docker.com/build/buildkit/#getting-started)
 instructions.
+
+On Debian / Ubuntu, install using:
+
+   apt install buildx
 
 If you are running a Mac ARM64 system, you will need to manually tell docker to
 use the x86_64 version of Elasticsearch 2.4. This can be done by running the
