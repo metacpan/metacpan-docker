@@ -218,7 +218,7 @@ The PostgreSQL service by default is only accessible from other containers.
 
 The grep metacpan front end is accessible via:
 
-- [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
+- [http://localhost:3000](http://localhost:3000)
 
 Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 [metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
