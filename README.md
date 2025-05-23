@@ -185,28 +185,6 @@ To access the `psql` command line client in the PostgreSQL container:
 Each container is responsible for a different service. Some of these services
 are available in the developer environment via ports on the host system.
 
-We are using [traefik][13] to manage the traffic between services. The current
-configuration is:
-
-- api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
-- web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
-- grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
-
-In order to access to the localhost subdomains, you probably have to manually
-add these entries in you `/etc/hosts` file.
-
-    # add to /etc/hosts
-    127.0.0.1   api.metacpan.localhost
-    127.0.0.1   gh.metacpan.localhost
-    127.0.0.1   grep.metacpan.localhost
-    127.0.0.1   metacpan.localhost
-    127.0.0.1   web.metacpan.localhost
-
-You can access the dashboard configuration via:
-[http://metacpan.localhost:8080](http://metacpan.localhost:8080)
-
-[0]: https://docs.traefik.io/providers/docker/
-
 #### `web`
 
 The local instance of the web front end is accessible via:
