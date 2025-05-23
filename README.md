@@ -130,14 +130,14 @@ This will prompt you to confirm removing old indices and setting up mappings on
 the Elasticsearch service (say `YES`). It will then proceed to rsync a partial
 CPAN in `/CPAN` for its metadata to be imported.
 
-Once the above is done, you should be able to see your local partial CPAN data
-in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
-elsewhere.
-
-Alternatively, if you just want to hack on the web frontend, you can run this
-instead of all the above:
+After the initialization above completes, the next step is to start the web
+frontend with the following command:
 
     docker compose up web-server
+
+Once that is done, you should be able to see your local partial CPAN data
+in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
+elsewhere.
 
 From here, you can proceed and hack on the MetaCPAN code at `src/metacpan-api`
 and/or `src/metacpan-web` directories, and saving edits will reload the
