@@ -182,6 +182,8 @@ services:
     profiles:
       - grep
     image: metacpan/metacpan-grep-front-end:latest
+    ports:
+      - "3000:3000"
     build:
       context: ./src/metacpan-grep-front-end
     volumes:

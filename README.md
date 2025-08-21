@@ -130,14 +130,14 @@ This will prompt you to confirm removing old indices and setting up mappings on
 the Elasticsearch service (say `YES`). It will then proceed to rsync a partial
 CPAN in `/CPAN` for its metadata to be imported.
 
-Once the above is done, you should be able to see your local partial CPAN data
-in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
-elsewhere.
-
-Alternatively, if you just want to hack on the web frontend, you can run this
-instead of all the above:
+After the initialization above completes, the next step is to start the web
+frontend with the following command:
 
     docker compose up web-server
+
+Once that is done, you should be able to see your local partial CPAN data
+in e.g. [http://localhost:5001/recent](http://localhost:5001/recent) and
+elsewhere.
 
 From here, you can proceed and hack on the MetaCPAN code at `src/metacpan-api`
 and/or `src/metacpan-web` directories, and saving edits will reload the
@@ -185,28 +185,6 @@ To access the `psql` command line client in the PostgreSQL container:
 Each container is responsible for a different service. Some of these services
 are available in the developer environment via ports on the host system.
 
-We are using [traefik][13] to manage the traffic between services. The current
-configuration is:
-
-- api: [http://api.metacpan.localhost](http://api.metacpan.localhost)
-- web: [http://web.metacpan.localhost](http://web.metacpan.localhost)
-- grep: [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
-
-In order to access to the localhost subdomains, you probably have to manually
-add these entries in you `/etc/hosts` file.
-
-    # add to /etc/hosts
-    127.0.0.1   api.metacpan.localhost
-    127.0.0.1   gh.metacpan.localhost
-    127.0.0.1   grep.metacpan.localhost
-    127.0.0.1   metacpan.localhost
-    127.0.0.1   web.metacpan.localhost
-
-You can access the dashboard configuration via:
-[http://metacpan.localhost:8080](http://metacpan.localhost:8080)
-
-[0]: https://docs.traefik.io/providers/docker/
-
 #### `web`
 
 The local instance of the web front end is accessible via:
@@ -240,7 +218,7 @@ The PostgreSQL service by default is only accessible from other containers.
 
 The grep metacpan front end is accessible via:
 
-- [http://grep.metacpan.localhost](http://grep.metacpan.localhost)
+- [http://localhost:3000](http://localhost:3000)
 
 Note: this is using a smaller, frozen version of `metacpan-cpan-extracted` via
 [metacpan-cpan-extracted-lite](https://github.com/metacpan/metacpan-cpan-extracted-lite).
