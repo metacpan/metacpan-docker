@@ -150,9 +150,11 @@ services:
     profiles:
       - dev
       - ingest
-    image: elasticsearch:2.4
+    image: elasticsearch:8.19.9
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
     volumes:
       - type: volume
         source: elasticsearch
