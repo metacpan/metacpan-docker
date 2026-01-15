@@ -36,6 +36,7 @@ services:
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
+      target: develop
     # put variables for compose inside a .env file
     # use env_file for variables to be set inside the container
     env_file:
@@ -48,7 +49,9 @@ services:
         target: /CPAN
       - type: bind
         source: ./src/metacpan-api
-        target: /metacpan-api
+        target: /app
+      - type: volume
+        target: /app/local
       - type: bind
         source: ./bin/index-cpan.sh
         target: /bin/index-cpan.sh
