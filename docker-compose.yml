@@ -41,8 +41,6 @@ services:
     # use env_file for variables to be set inside the container
     env_file:
       - .env
-    command: >
-      ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
         source: cpan
