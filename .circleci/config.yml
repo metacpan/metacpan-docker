@@ -26,12 +26,12 @@ jobs:
       # probably need to wait for it here, so we'll add our own check.
       - run:
           command: |
-            ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch_test --
+            ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch-test --
           name: wait for ES
       - run:
           name: Run complete MetaCPAN API Test Suite
           command: |
-            docker-compose --profile test exec -T api_test prove -lr --jobs 4 t
+            docker-compose --profile test exec -T api-test prove -lr --jobs 4 t
             docker-compose --profile test down
       - run:
           name: Show Docker container logs on Error
