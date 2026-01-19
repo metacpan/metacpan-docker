@@ -17,22 +17,17 @@ jobs:
           command: |
             ./bin/metacpan-docker init
           name: clone missing repositories
+
       - run:
+          name: docker compose build
           command: |
-            docker-compose --verbose --profile test up -d
-          name: compose up
-      # Since we're running docker-compose -d, we don't actually know if
-      # Elasticsearch is available at the time this build step begins. We
-      # probably need to wait for it here, so we'll add our own check.
+            docker compose --profile test build api-test
+
       - run:
+          name: run tests
           command: |
-            ./src/metacpan-api/wait-for-es.sh http://localhost:9200 elasticsearch-test --
-          name: wait for ES
-      - run:
-          name: Run complete MetaCPAN API Test Suite
-          command: |
-            docker-compose --profile test exec -T api-test prove -lr --jobs 4 t
-            docker-compose --profile test down
+            docker compose --profile test run api-test prove -lr -j4 t
+
       - run:
           name: Show Docker container logs on Error
           command: |
