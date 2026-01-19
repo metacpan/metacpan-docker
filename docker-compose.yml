@@ -70,13 +70,16 @@ services:
       - dev
       - ingest
     image: metacpan/metacpan-ingest:latest
+    build:
+      context: ./src/metacpan-ingest
+      target: develop
     volumes:
       - type: volume
         source: cpan
         target: /CPAN
       - type: bind
         source: ./configs/metacpan-ingest/metacpan_ingest_local.conf
-        target: /metacpan-ingest/metacpan_ingest_local.conf
+        target: /app/metacpan_ingest_local.conf
         read_only: true
     depends_on:
       - elasticsearch
