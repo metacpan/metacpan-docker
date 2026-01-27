@@ -12,6 +12,9 @@ include:
   - path:
       - src/metacpan-web/docker-compose.yml
       - compose/web.yml
+  - path:
+      - src/metacpan-api/docker-compose.yml
+      - compose/api.yml
 
 services:
   #              _
@@ -21,42 +24,6 @@ services:
   #  \__,_| .__/|_|
   #       |_|
   #
-
-  cloud_api:
-    profiles:
-      - cloud-es
-    depends_on:
-      pghost:
-        condition: service_healthy
-    image: metacpan/metacpan-api:latest
-    build:
-      context: ./src/metacpan-api
-    # put variables for compose inside a .env file
-    # use env_file for variables to be set inside the container
-    env_file:
-      - .env
-    command: >
-      ${API_SERVER} ./bin/api.pl
-    volumes:
-      - type: volume
-        source: cpan
-        target: /CPAN
-      - type: bind
-        source: ./src/metacpan-api
-        target: /metacpan-api
-      - type: bind
-        source: ./bin/index-cpan.sh
-        target: /bin/index-cpan.sh
-        read_only: true
-      - type: bind
-        source: ./bin/partial-cpan-mirror.sh
-        target: /bin/partial-cpan-mirror.sh
-        read_only: true
-    ports:
-      - "5000:5000"
-    networks:
-      - database
-      - web-network
 
   api:
     profiles:
@@ -69,19 +36,20 @@ services:
     image: metacpan/metacpan-api:latest
     build:
       context: ./src/metacpan-api
+      target: develop
     # put variables for compose inside a .env file
     # use env_file for variables to be set inside the container
     env_file:
       - .env
-    command: >
-      ${API_SERVER} ./bin/api.pl
     volumes:
       - type: volume
         source: cpan
         target: /CPAN
       - type: bind
         source: ./src/metacpan-api
-        target: /metacpan-api
+        target: /app
+      - type: volume
+        target: /app/local
       - type: bind
         source: ./bin/index-cpan.sh
         target: /bin/index-cpan.sh
@@ -97,55 +65,21 @@ services:
       - elasticsearch
       - web-network
 
-  api_test:
-    profiles:
-      - test
-      - ingest-test
-    depends_on:
-      elasticsearch_test:
-        condition: service_healthy
-      pghost:
-        condition: service_healthy
-    image: metacpan/metacpan-api:latest
-    build:
-      context: ./src/metacpan-api
-    env_file:
-      - localapi_test.env
-    command: >
-      ${API_SERVER} ./bin/api.pl
-    volumes:
-      - type: volume
-        source: cpan
-        target: /CPAN
-      - type: bind
-        source: ./src/metacpan-api
-        target: /metacpan-api
-      - type: bind
-        source: ./bin/index-cpan.sh
-        target: /bin/index-cpan.sh
-        read_only: true
-      - type: bind
-        source: ./bin/partial-cpan-mirror.sh
-        target: /bin/partial-cpan-mirror.sh
-        read_only: true
-    ports:
-      - "5000"
-    networks:
-      - database
-      - elasticsearch
-
   ingest:
     profiles:
       - dev
       - ingest
     image: metacpan/metacpan-ingest:latest
+    build:
+      context: ./src/metacpan-ingest
+      target: develop
     volumes:
       - type: volume
         source: cpan
         target: /CPAN
       - type: bind
         source: ./configs/metacpan-ingest/metacpan_ingest_local.conf
-        target: /metacpan-ingest/metacpan_ingest_local.conf
+        target: /app/metacpan_ingest_local.conf
         read_only: true
     depends_on:
       - elasticsearch
@@ -216,9 +150,11 @@ services:
     profiles:
       - dev
       - ingest
-    image: elasticsearch:2.4
+    image: elasticsearch:8.19.9
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
     volumes:
       - type: volume
         source: elasticsearch
@@ -232,38 +168,6 @@ services:
     networks:
       - elasticsearch
 
-  #       _           _   _                              _
-  #   ___| | __ _ ___| |_(_) ___ ___  ___  __ _ _ __ ___| |__
-  #  / _ \ |/ _` / __| __| |/ __/ __|/ _ \/ _` | '__/ __| '_ \
-  # |  __/ | (_| \__ \ |_| | (__\__ \  __/ (_| | | | (__| | | |
-  #  \___|_|\__,_|___/\__|_|\___|___/\___|\__,_|_|  \___|_| |_|
-  #
-  #  _            _
-  # | |_ ___  ___| |_
-  # | __/ _ \/ __| __|
-  # | ||  __/\__ \ |_
-  #  \__\___||___/\__|
-  #
-
-  elasticsearch_test:
-    profiles:
-      - test
-      - ingest-test
-    image: elasticsearch:2.4
-    environment:
-      - discovery.type=single-node
-    volumes:
-      - type: volume
-        source: elasticsearch_test
-        target: /usr/share/elasticsearch/data
-    healthcheck:
-      timeout: 5s
-      start_period: 60s
-      test: ["CMD", "curl", "--fail", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s"]
-    ports:
-      - "9200"
-    networks:
-      - elasticsearch
   #                  _                            _
   #  _ __   ___  ___| |_ __ _ _ __ ___  ___  __ _| |
   # | '_ \ / _ \/ __| __/ _` | '__/ _ \/ __|/ _` | |
@@ -274,7 +178,6 @@ services:
 
   pghost:
     profiles:
-      - cloud-es
       - dev
       - test
       - ingest-test
@@ -332,7 +235,6 @@ volumes:
   api_carton:
   cpan:
   elasticsearch:
-  elasticsearch_test:
   pghost-data:
   metacpan_git_shared:
     external: true

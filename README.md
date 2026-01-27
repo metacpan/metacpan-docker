@@ -82,12 +82,6 @@ On Debian / Ubuntu, install using:
 
     apt install docker-buildx
 
-If you are running a Mac ARM64 system, you will need to manually tell docker to
-use the x86_64 version of Elasticsearch 2.4. This can be done by running the
-command:
-
-    docker pull elasticsearch:2.4 --platform=linux/x86_64
-
 It is highly recommended that you alias `docker compose` to `fig` (its original
 name) and use it wherever `docker compose` is used. You are going to have to
 type this command a lot.

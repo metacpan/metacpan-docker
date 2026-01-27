@@ -1,0 +1,8 @@
+---
+services:
+  elasticsearch-test:
+    profiles:
+      - ingest-test
+  api-test:
+    profiles:
+      - ingest-test
